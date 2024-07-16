@@ -15,7 +15,7 @@ return new class extends Migration
             $table->bigIncrements('id');
             $table->string('name')->nullable();
             $table->string('url')->nullable();
-            $table->string('sandbox')->nullable();
+            $table->boolean('sandbox')->nullable();
             $table->string('merchant')->nullable();
             $table->string('username')->nullable();
             $table->string('password')->nullable();

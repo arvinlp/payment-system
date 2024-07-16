@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('refid')->nullable();
             $table->string('track_id')->nullable();
             $table->string('allowed_card')->nullable();
+            $table->string('authority')->nullable();
             $table->string('transaction')->nullable();
             $table->string('transaction_id')->nullable();
             $table->string('currency')->nullable();
@@ -28,9 +29,9 @@ return new class extends Migration
             $table->string('payer_description')->nullable();
             $table->string('gateway')->nullable();
             $table->string('callback_url')->nullable();
-            $table->tinyInteger('status')->unsigned()->nullable()->default(1);
+            $table->integer('status')->unsigned()->nullable()->default(0);
             $table->string('status_gateway')->nullable();
-            $table->string('call_bk')->nullable();
+            $table->string('response_bk')->nullable();
             $table->timestamps();
 
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');

@@ -5,23 +5,53 @@
  * Copyright by Arvin Loripour 
  * WebSite : http://www.arvinlp.ir 
  * @Last Modified by: Arvin.Loripour
- * @Last Modified time: 2024-07-16 08:51:43
+ * @Last Modified time: 2024-07-16 11:13:22
  */
 namespace App\Http\Controllers\V1;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\V1\Gateway\Novinopay;
+use App\Models\Merchant;
+use App\Models\Payment;
 use Illuminate\Http\Request;
 
 class PaymentController extends Controller{
 
     public function index(Request $request){
-        if(self::verifyDataStep1($request)){
+        if(self::goToGateWay($request)){
+            $merchantData = Merchant::where('merchant',$request->input('merchant'))->first();
+            $data = new Payment;
+            $data->gateway = $request->input('gateway');
+            $data->merchant_id = $merchantData->id;
+            $data->currency = $request->input('currency');
+            $data->amount = $request->input('amount');
+            $data->callback_url = $request->input('callback_url');
+            $data->status = 100;
+            $transaction = uniqueRandomString('payments','transaction',32);
+            $data->transaction = $transaction;
+            if($request->has('order_code')){ $data->order_code = $request->input('order_code'); }
+            else{ 
+                $order_code = uniqueRandomInt('payments','order_code',11111111000,99999999999);
+                $data->order_code = $order_code;
+            }
+            if($request->has('allowed_card')) $data->allowed_card = $request->input('allowed_card');
+            if($request->has('payer_mobile')) $data->payer_mobile = $request->input('payer_mobile');
+            if($request->has('payer_email')) $data->payer_email = $request->input('payer_email');
+            if($request->has('payer_description')) $data->payer_description = $request->input('payer_description');
+            $data->save();
             
+            switch($request->input('gateway')){
+                default:
+                    $gateway = new Novinopay;
+                    $gateway->createPayment($data);
+                    break;
+            }
         }else{
-            return view('payment-system');
+            $merchants = Merchant::get();
+            return view('payment-system',['merchants'=>$merchants]);
         }
     }
-    public function verifyDataStep1($request){
+    private function goToGateWay($request){
         if(
             $request->has('merchant') && 
             $request->has('amount') && 
@@ -29,9 +59,14 @@ class PaymentController extends Controller{
             $request->has('currency') && 
             $request->has('callback_url'))
         {
-            return true;
+            if(Merchant::where('merchant',$request->input('merchant'))->where('status',1)->first()){
+                return true;
+            }else{
+                return false;
+            }
         }else{
             return false;
         }
     }
+
 }

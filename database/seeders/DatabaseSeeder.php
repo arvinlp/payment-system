@@ -16,9 +16,9 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         User::create([
-            'fname' => 'آروین',
-            'lname' => 'لری پور',
-            'nickname' => 'آروین لری پور',
+            'fname' => 'Arvin',
+            'lname' => 'Loripour',
+            'nickname' => 'Arvinlp',
             'mobile' => '09000000000',
             'email' => 'info@example.com',
             'type' => 'staff',
@@ -27,7 +27,7 @@ class DatabaseSeeder extends Seeder
         ]);
         Merchant::create([
             'user_id' => 1,
-            'name' => 'آروین لری پور',
+            'name' => 'Arvinlp',
             'merchant' => rand(10000000000,100000000000),
             'url' => 'arvinlp.ir',
             'status' => 1,
@@ -36,60 +36,70 @@ class DatabaseSeeder extends Seeder
             'name' => 'YekPay',
             'url' => 'example.com',
             'merchant' => 'xxxx-xxxx-xxxx-xxxx',
+            'sandbox' => 1,
             'status' => 1,
         ]);
         Gateway::create([
             'name' => 'NovinPal',
             'url' => 'example.com',
             'merchant' => 'xxxx-xxxx-xxxx-xxxx',
+            'sandbox' => 1,
             'status' => 1,
         ]);
         Gateway::create([
             'name' => 'NovinoPay',
             'url' => 'example.com',
             'merchant' => 'xxxx-xxxx-xxxx-xxxx',
+            'sandbox' => 1,
             'status' => 1,
         ]);
         Gateway::create([
             'name' => 'NextPay',
             'url' => 'example.com',
             'merchant' => 'xxxx-xxxx-xxxx-xxxx',
+            'sandbox' => 1,
             'status' => 1,
         ]);
         Gateway::create([
             'name' => 'Aqaypardakht',
             'url' => 'example.com',
             'merchant' => 'xxxx-xxxx-xxxx-xxxx',
+            'sandbox' => 1,
             'status' => 1,
         ]);
         Gateway::create([
             'name' => 'IdPay',
             'url' => 'example.com',
             'merchant' => 'xxxx-xxxx-xxxx-xxxx',
+            'sandbox' => 1,
             'status' => 1,
         ]);
         Gateway::create([
             'name' => 'Pay',
             'url' => 'example.com',
             'merchant' => 'xxxx-xxxx-xxxx-xxxx',
+            'sandbox' => 1,
             'status' => 1,
         ]);
         Gateway::create([
             'name' => 'ParsPal',
             'url' => 'example.com',
             'merchant' => 'xxxx-xxxx-xxxx-xxxx',
+            'sandbox' => 1,
             'status' => 1,
         ]);
         Gateway::create([
             'name' => 'Zarinpal',
             'url' => 'example.com',
             'merchant' => 'xxxx-xxxx-xxxx-xxxx',
+            'sandbox' => 1,
             'status' => 1,
         ]);
         Gateway::create([
             'name' => 'Zibal',
             'url' => 'example.com',
             'merchant' => 'zibal',
+            'sandbox' => 1,
             'status' => 1,
         ]);
     }
