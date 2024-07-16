@@ -5,7 +5,7 @@
  * Copyright by Arvin Loripour 
  * WebSite : http://www.arvinlp.ir 
  * @Last Modified by: Arvin.Loripour
- * @Last Modified time: 2024-07-16 13:14:42
+ * @Last Modified time: 2024-07-16 14:10:50
  */
 
 return [
@@ -18,7 +18,7 @@ return [
         'sandbox' => env('NOVINOPAY_SANDBOX', true),
     ],
     'novinpal' => [
-        'merchant' => env('PARSPAL_API_KEY', 'xxxx-xxxx-xxxx-xxxx'),
+        'merchant' => env('NOVINPAL_API_KEY', 'xxxx-xxxx-xxxx-xxxx'),
         'sandbox' => env('NOVINPAL_SANDBOX', true),
     ],
     'parspal' => [
