@@ -5,7 +5,7 @@
  * Copyright by Arvin Loripour 
  * WebSite : http://www.arvinlp.ir 
  * @Last Modified by: Arvin.Loripour
- * @Last Modified time: 2024-07-16 12:43:51
+ * @Last Modified time: 2024-07-16 13:22:04
  */
 namespace App\Http\Controllers\V1;
 
@@ -66,8 +66,12 @@ class PaymentController extends Controller{
                     $gateway = new Aqayepardakht;
                     $gateway->createPayment($data);
                     break;
-                default:
+                case 'Zarinpal':
                     $gateway = new Zarinpal;
+                    $gateway->createPayment($data);
+                    break;
+                default:
+                    $gateway = new Novinopay;
                     $gateway->createPayment($data);
                     break;
             }

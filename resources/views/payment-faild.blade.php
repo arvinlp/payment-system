@@ -4,7 +4,12 @@
 <head></head>
 
 <body>
-    error
+    <div>error</div> 
+    <div>error</div> 
+    <div>error</div> 
+    <div>error</div> 
+    <div>error</div> 
+    <div>error</div> 
     @php print_r($data) @endphp
 </body>
 

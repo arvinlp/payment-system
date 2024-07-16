@@ -7,12 +7,12 @@
     <form method="post" action="">
         @csrf
         <select name="gateway">
-            <option value="Zarinpal">Zarinpal</option>
             <option value="Aqayepardakht">Aqayepardakht</option>
-            <option value="Parspal">Parspal</option>
-            <option value="Zibal">Zibal</option>
-            <option value="NovinPal">NovinPal</option>
             <option value="NovinoPay">NovinoPay</option>
+            <option value="NovinPal">NovinPal</option>
+            <option value="Parspal">Parspal</option>
+            <option value="Zarinpal">Zarinpal</option>
+            <option value="Zibal">Zibal</option>
         </select>
         <select name="currency">
             <option value="rial">Rial</option>

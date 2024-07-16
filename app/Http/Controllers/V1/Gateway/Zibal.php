@@ -5,7 +5,7 @@
  * Copyright by Arvin Loripour 
  * WebSite : http://www.arvinlp.ir 
  * @Last Modified by: Arvin.Loripour
- * @Last Modified time: 2024-07-16 13:13:50
+ * @Last Modified time: 2024-07-16 13:20:09
  */
 
 namespace App\Http\Controllers\V1\Gateway;
@@ -73,9 +73,7 @@ class Zibal{
     public function verifyPayment(Request $request)
     {
         if ($request->has('success') && $request->input('success') == "1") {
-
             $trackId = ($request->has('trackId') && !empty($request->input('trackId'))) ? $request->input('trackId') : "";
-
             if ($paymentData = Payment::where('transaction_id', $trackId)->where('gateway', 'Zibal')->first()) {
 
                 $data = [

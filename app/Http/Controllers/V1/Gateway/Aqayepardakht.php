@@ -5,7 +5,7 @@
  * Copyright by Arvin Loripour 
  * WebSite : http://www.arvinlp.ir 
  * @Last Modified by: Arvin.Loripour
- * @Last Modified time: 2024-07-16 13:16:18
+ * @Last Modified time: 2024-07-16 13:24:41
  */
 
 namespace App\Http\Controllers\V1\Gateway;
@@ -45,7 +45,7 @@ class Aqayepardakht{
         curl_close($curl);
 
         $result = json_decode($curl_exec);
-
+        
         if (isset($result->status) && $result->status == 'success') {
             $data->transaction_id = $result->transid;
             $data->save();
@@ -65,6 +65,7 @@ class Aqayepardakht{
                 $callbackData = $data->callback_url."?amount={$amount}&transaction={$data->transaction}&status=-1001";
                 return Redirect::to($callbackData);
             }else{
+                print_r($result);
                 return view('payment-faild', ['data' => $result]);
             }
         }

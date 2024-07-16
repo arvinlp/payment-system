@@ -5,7 +5,7 @@
  * Copyright by Arvin Loripour 
  * WebSite : http://www.arvinlp.ir 
  * @Last Modified by: Arvin.Loripour
- * @Last Modified time: 2024-07-16 13:13:23
+ * @Last Modified time: 2024-07-16 13:25:59
  */
 
 namespace App\Http\Controllers\V1\Gateway;
@@ -20,7 +20,7 @@ class NovinPal{
     private $API_KEY;
 
     public function __construct(){
-        $this->API_KEY = (Config::get('gateway.novinpal.sandbox') ? '' : Config::get('gateway.novinpal.merchant'));
+        $this->API_KEY = (Config::get('gateway.novinpal.sandbox') ? 'sandbox' : Config::get('gateway.novinpal.merchant'));
     }
 
     public function createPayment($data)
@@ -68,6 +68,7 @@ class NovinPal{
                 $callbackData = $data->callback_url."?amount={$amount}&transaction={$data->transaction}&status=-1001";
                 return Redirect::to($callbackData);
             }else{
+                print_r($result);
                 return view('payment-faild', ['data' => $result]);
             }
         }

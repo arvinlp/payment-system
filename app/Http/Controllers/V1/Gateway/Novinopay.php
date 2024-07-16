@@ -5,7 +5,7 @@
  * Copyright by Arvin Loripour 
  * WebSite : http://www.arvinlp.ir 
  * @Last Modified by: Arvin.Loripour
- * @Last Modified time: 2024-07-16 13:15:47
+ * @Last Modified time: 2024-07-16 13:25:43
  */
 
 namespace App\Http\Controllers\V1\Gateway;
@@ -20,7 +20,7 @@ class Novinopay{
     private $merchantCode;
 
     public function __construct(){
-        $this->merchantCode = (Config::get('gateway.novinopay.sandbox') ? '' : Config::get('gateway.novinopay.merchant'));
+        $this->merchantCode = (Config::get('gateway.novinopay.sandbox') ? 'sandbox' : Config::get('gateway.novinopay.merchant'));
     }
 
     public function createPayment($data)
@@ -45,7 +45,6 @@ class Novinopay{
         curl_close($curl);
 
         $result = json_decode($curl_exec);
-
         if (isset($result->status) && $result->status == 100) {
             $data->authority = $result->data->authority;
             $data->transaction_id = $result->data->trans_id;
@@ -65,6 +64,7 @@ class Novinopay{
                 $callbackData = $data->callback_url."?amount={$amount}&transaction={$data->transaction}&status=-1001";
                 return Redirect::to($callbackData);
             }else{
+                print_r($result);
                 return view('payment-faild', ['data' => $result]);
             }
         }
