@@ -5,35 +5,31 @@
  * Copyright by Arvin Loripour 
  * WebSite : http://www.arvinlp.ir 
  * @Last Modified by: Arvin.Loripour
- * @Last Modified time: 2024-07-16 12:55:44
+ * @Last Modified time: 2024-07-16 13:13:30
  */
 
 namespace App\Http\Controllers\V1\Gateway;
 
-use App\Models\Gateway;
 use App\Models\Payment;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Redirect;
 
-class Zarinpal
-{
+class Zarinpal{
 
-    public function __construct()
-    {
+    private $merchantCode;
+
+    public function __construct(){
+        $this->merchantCode = (Config::get('gateway.zarinpal.sandbox') ? '' : Config::get('gateway.zarinpal.merchant'));
     }
 
     public function createPayment($data)
     {
-        if (!$gatewayData = Gateway::where('name', 'Zarinpal')->first()) abort(404);
         if ($data->currency != 'rial') $amount = (float) $data->amount * 10;
         else $amount = (float) $data->amount;
 
-        $merchantCode = ($gatewayData->sandbox ? 'zarinpal' : $gatewayData->merchant);
-        $upay = ($gatewayData->sandbox ? 'sandbox' : 'www');
-        $order_id = $gatewayData->code;
-
         $gateData = [
-            "merchant_id" => $merchantCode,
+            "merchant_id" => $this->merchantCode,
             "amount" => $amount, //// rial
             "description"=> 'پرداخت مبلغ '.$amount,
             "callback_url" => route('payment.zarinpal')
@@ -57,7 +53,7 @@ class Zarinpal
             
             return Redirect::to('https://payment.zarinpal.com/pg/StartPay/'.$result->data->authority);
         } else {
-            $error = "Error Code: {$result->errors->code} | {$result->errors->message} | {$merchantCode}";
+            $error = "Error Code: {$result->errors->code} | {$result->errors->message} | {$this->merchantCode}";
             $data->status_gateway = $result->errors->code;
             $data->status = -1001;
             if ($data->response_bk)
@@ -77,20 +73,17 @@ class Zarinpal
 
     public function verifyPayment(Request $request)
     {
-        if (!$gatewayData = Gateway::where('name', 'Zarinpal')->first()) abort(404);
         if ($request->has('Status') && $request->input('Status') == "OK") {
 
             $Authority = ($request->has('Authority') && !empty($request->input('Authority'))) ? $request->input('Authority') : "";
 
             if ($paymentData = Payment::where('authority', $Authority)->where('gateway', 'Zarinpal')->first()) {
 
-                $merchantCode = ($gatewayData->sandbox ? 'zarinpal' : $gatewayData->merchant);
-
-                if ($gatewayData->currency != 'rial') $amount = (float) $gatewayData->amount * 10;
-                else $amount = (float) $gatewayData->amount;
+                if ($paymentData->currency != 'rial') $amount = (float) $paymentData->amount * 10;
+                else $amount = (float) $paymentData->amount;
 
                 $data = [
-                    "merchant_id" => $merchantCode,
+                    "merchant_id" => $this->merchantCode,
                     "amount" => $amount,
                     "authority" => $Authority
                 ];
@@ -122,7 +115,7 @@ class Zarinpal
                 } else {
                     $paymentData->status_gateway = $result->errors->status;
                     $paymentData->status = -1101;
-                    $error = "Error Code: {$result->errors->status} | {$result->errors->message} | {$merchantCode}";
+                    $error = "Error Code: {$result->errors->status} | {$result->errors->message} | {$this->merchantCode}";
                     if ($paymentData->response_bk)
                         $paymentData->response_bk .= " | {$error}";
                     else

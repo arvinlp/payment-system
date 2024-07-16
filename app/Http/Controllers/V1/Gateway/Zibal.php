@@ -5,34 +5,31 @@
  * Copyright by Arvin Loripour 
  * WebSite : http://www.arvinlp.ir 
  * @Last Modified by: Arvin.Loripour
- * @Last Modified time: 2024-07-16 12:44:58
+ * @Last Modified time: 2024-07-16 13:13:50
  */
 
 namespace App\Http\Controllers\V1\Gateway;
 
-use App\Models\Gateway;
 use App\Models\Payment;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Redirect;
 
-class Zibal
-{
+class Zibal{
 
-    public function __construct()
-    {
+    private $merchantCode;
+
+    public function __construct(){
+        $this->merchantCode = (Config::get('gateway.zibal.sandbox') ? 'zibal' : Config::get('gateway.zibal.merchant'));
     }
 
     public function createPayment($data)
     {
-        if (!$gatewayData = Gateway::where('name', 'Zibal')->first()) abort(404);
         if ($data->currency != 'rial') $amount = (float) $data->amount * 10;
         else $amount = (float) $data->amount;
 
-        $merchantCode = ($gatewayData->sandbox ? 'zibal' : $gatewayData->merchant);
-        $order_id = $gatewayData->code;
-
         $gateData = [
-            "merchant" => $merchantCode,
+            "merchant" => $this->merchantCode,
             "amount" => $amount, //// rial
             "callbackUrl" => route('payment.zibal')
         ];
@@ -55,7 +52,7 @@ class Zibal
             
             return Redirect::to('https://gateway.zibal.ir/start/'.$result->trackId);
         } else {
-            $error = "Error Code: {$result->result} | {$result->message} | {$merchantCode}";
+            $error = "Error Code: {$result->result} | {$result->message} | {$this->merchantCode}";
             $data->status_gateway = $result->result;
             $data->status = -1001;
             if ($data->response_bk)
@@ -75,17 +72,14 @@ class Zibal
 
     public function verifyPayment(Request $request)
     {
-        if (!$gatewayData = Gateway::where('name', 'Zibal')->first()) abort(404);
         if ($request->has('success') && $request->input('success') == "1") {
 
             $trackId = ($request->has('trackId') && !empty($request->input('trackId'))) ? $request->input('trackId') : "";
 
             if ($paymentData = Payment::where('transaction_id', $trackId)->where('gateway', 'Zibal')->first()) {
 
-                $merchantCode = ($gatewayData->sandbox ? 'zibal' : $gatewayData->merchant);
-
                 $data = [
-                    "merchant" => $merchantCode,
+                    "merchant" => $this->merchantCode,
                     "trackId" => $trackId
                 ];
 
@@ -116,7 +110,7 @@ class Zibal
                 } else {
                     $paymentData->status_gateway = $result->status;
                     $paymentData->status = -1101;
-                    $error = "Error Code: {$result->status} | {$result->message} | {$merchantCode}";
+                    $error = "Error Code: {$result->status} | {$result->message} | {$this->merchantCode}";
                     if ($paymentData->response_bk)
                         $paymentData->response_bk .= " | {$error}";
                     else

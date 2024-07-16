@@ -5,34 +5,31 @@
  * Copyright by Arvin Loripour 
  * WebSite : http://www.arvinlp.ir 
  * @Last Modified by: Arvin.Loripour
- * @Last Modified time: 2024-07-16 12:39:23
+ * @Last Modified time: 2024-07-16 13:16:18
  */
 
 namespace App\Http\Controllers\V1\Gateway;
 
-use App\Models\Gateway;
 use App\Models\Payment;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Redirect;
 
-class Aqayepardakht
-{
+class Aqayepardakht{
 
-    public function __construct()
-    {
+    private $merchantCode;
+
+    public function __construct(){
+        $this->merchantCode = (Config::get('gateway.aqayepardakht.sandbox') ? '' : Config::get('gateway.aqayepardakht.merchant'));
     }
 
     public function createPayment($data)
     {
-        if (!$gatewayData = Gateway::where('name', 'Aqayepardakht')->first()) abort(404);
         if ($data->currency != 'toman') $amount = (float) $data->amount / 10;
         else $amount = (float) $data->amount;
 
-        $merchantCode = ($gatewayData->sandbox ? 'sandbox' : $gatewayData->merchant);
-        $order_id = $gatewayData->code;
-
         $gateData = [
-            "pin" => $merchantCode,
+            "pin" => $this->merchantCode,
             "amount" => $amount, //// rial
             "callback" => route('payment.aqayepardakht')
         ];
@@ -55,7 +52,7 @@ class Aqayepardakht
             
             return Redirect::to('https://panel.aqayepardakht.ir/startpay/'.$result->transid);
         } else {
-            $error = "Error Code: {$result->status} | {$result->code} | {$merchantCode}";
+            $error = "Error Code: {$result->status} | {$result->code} | {$this->merchantCode}";
             $data->status_gateway = $result->code;
             $data->status = -1001;
             if ($data->response_bk)
@@ -75,19 +72,16 @@ class Aqayepardakht
 
     public function verifyPayment(Request $request)
     {
-        if (!$gatewayData = Gateway::where('name', 'Aqayepardakht')->first()) abort(404);
         if ($request->has('success') && $request->input('success') == "1") {
 
             $transid = ($request->has('transid') && !empty($request->input('transid'))) ? $request->input('transid') : "";
 
             if ($paymentData = Payment::where('transaction_id', $transid)->where('gateway', 'Aqayepardakht')->first()) {
 
-                $merchantCode = ($gatewayData->sandbox ? 'sandbox' : $gatewayData->merchant);
-
                 if ($paymentData->currency != 'toman') $amount = (float) $paymentData->amount / 10;
                 else $amount = (float) $paymentData->amount;
                 $data = [
-                    "pin" => $merchantCode,
+                    "pin" => $this->merchantCode,
                     "transid" => $transid,
                     "amount" => $amount
                 ];
@@ -119,7 +113,7 @@ class Aqayepardakht
                 } else {
                     $paymentData->status_gateway = $result->code;
                     $paymentData->status = -1101;
-                    $error = "Error Code: {$result->status} | {$result->code} | {$merchantCode}";
+                    $error = "Error Code: {$result->status} | {$result->code} | {$this->merchantCode}";
                     if ($paymentData->response_bk)
                         $paymentData->response_bk .= " | {$error}";
                     else

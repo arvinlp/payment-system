@@ -5,31 +5,31 @@
  * Copyright by Arvin Loripour 
  * WebSite : http://www.arvinlp.ir 
  * @Last Modified by: Arvin.Loripour
- * @Last Modified time: 2024-07-16 12:33:14
+ * @Last Modified time: 2024-07-16 13:13:24
  */
 
 namespace App\Http\Controllers\V1\Gateway;
 
-use App\Models\Gateway;
 use App\Models\Payment;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Redirect;
 
-class Parspal
-{
+class Parspal{
 
-    public function __construct()
-    {
+    private $API_KEY;
+    private $url;
+
+    public function __construct(){
+        $this->API_KEY = (Config::get('gateway.parspal.sandbox') ? '' : Config::get('gateway.parspal.merchant'));
+
+        $url = (Config::get('gateway.parspal.sandbox') ? 'https://sandbox.api.parspal.com/v1/' : 'https://api.parspal.com/v1/');
     }
 
     public function createPayment($data)
     {
-        if (!$gatewayData = Gateway::where('name', 'Parspal')->first()) abort(404);
         if ($data->currency != 'rial') $amount = (float) $data->amount * 10;
         else $amount = (float) $data->amount;
-
-        $url = ($gatewayData->sandbox ? 'https://sandbox.api.parspal.com/v1/' : 'https://api.parspal.com/v1/');
-        $APIKEY = $gatewayData->merchant;
 
         $gateData = [
             "amount" => $amount, //// rial
@@ -37,10 +37,10 @@ class Parspal
         ];
 
         $curl = curl_init();
-        curl_setopt($curl, CURLOPT_URL, $url.'request');
+        curl_setopt($curl, CURLOPT_URL, $this->url.'request');
         curl_setopt($curl, CURLOPT_POSTFIELDS, json_encode($gateData, JSON_UNESCAPED_UNICODE));
         curl_setopt($curl, CURLOPT_HTTPHEADER, array(
-            "APIKEY: {$APIKEY}",
+            "APIKEY: {$this->API_KEY}",
             "Content-Type: application/json",
         ));
         curl_setopt($curl, CURLOPT_TIMEOUT, 50);
@@ -58,7 +58,7 @@ class Parspal
             
             return Redirect::to($result["link"]);
         } else {
-            $error = "Error Code: {$result['message']} | {$APIKEY}";
+            $error = "Error Code: {$result['message']} | {$this->API_KEY}";
             $data->status_gateway = 0;
             $data->status = -1001;
             if ($data->response_bk)
@@ -78,15 +78,11 @@ class Parspal
 
     public function verifyPayment(Request $request)
     {
-        if (!$gatewayData = Gateway::where('name', 'Parspal')->first()) abort(404);
         if ($request->has('success') && $request->input('success') == "1") {
 
             $receipt_number = ($request->has('receipt_number') && !empty($request->input('receipt_number'))) ? $request->input('receipt_number') : "";
 
             if ($paymentData = Payment::where('transaction_id', $receipt_number)->where('gateway', 'Parspal')->first()) {
-
-                $url = ($gatewayData->sandbox ? 'https://sandbox.api.parspal.com/v1/' : 'https://api.parspal.com/v1/');
-                $APIKEY = $gatewayData->merchant;
 
                 if ($paymentData->currency != 'rial') $amount = (float) $paymentData->amount * 10;
                 else $amount = (float) $paymentData->amount;
@@ -97,10 +93,10 @@ class Parspal
                 ];
 
                 $curl = curl_init();
-                curl_setopt($curl, CURLOPT_URL, $url.'payment/verify');
+                curl_setopt($curl, CURLOPT_URL, $this->url.'payment/verify');
                 curl_setopt($curl, CURLOPT_POSTFIELDS, json_encode($data, JSON_UNESCAPED_UNICODE));
                 curl_setopt($curl, CURLOPT_HTTPHEADER, array(
-                    "APIKEY: {$APIKEY}",
+                    "APIKEY: {$this->API_KEY}",
                     "Content-Type: application/json",
                 ));
                 curl_setopt($curl, CURLOPT_TIMEOUT, 50);
@@ -126,7 +122,7 @@ class Parspal
                 } else {
                     $paymentData->status_gateway = $result->status;
                     $paymentData->status = -1101;
-                    $error = "Error Code: {$result->status} | {$result->message} | {$APIKEY}";
+                    $error = "Error Code: {$result->status} | {$result->message} | {$this->API_KEY}";
                     if ($paymentData->response_bk)
                         $paymentData->response_bk .= " | {$error}";
                     else

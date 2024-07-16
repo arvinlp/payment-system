@@ -5,33 +5,31 @@
  * Copyright by Arvin Loripour 
  * WebSite : http://www.arvinlp.ir 
  * @Last Modified by: Arvin.Loripour
- * @Last Modified time: 2024-07-16 11:31:55
+ * @Last Modified time: 2024-07-16 13:15:47
  */
 
 namespace App\Http\Controllers\V1\Gateway;
 
-use App\Models\Gateway;
 use App\Models\Payment;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Redirect;
 
-class Novinopay
-{
+class Novinopay{
 
-    public function __construct()
-    {
+    private $merchantCode;
+
+    public function __construct(){
+        $this->merchantCode = (Config::get('gateway.novinopay.sandbox') ? '' : Config::get('gateway.novinopay.merchant'));
     }
 
     public function createPayment($data)
     {
-        if (!$gatewayData = Gateway::where('name', 'NovinoPay')->first()) abort(404);
         if ($data->currency != 'rial') $amount = (float) $data->amount * 10;
         else $amount = (float) $data->amount;
 
-        $merchantCode = ($gatewayData->sandbox ? 'test' : $gatewayData->merchant);
-
         $gateData = [
-            "merchant_id" => $merchantCode,
+            "merchant_id" => $this->merchantCode,
             "amount" => $amount, //// rial
             "callback_url" => route('payment.novinopay')
         ];
@@ -54,7 +52,7 @@ class Novinopay
             $data->save();
             header("Location: {$result->data->payment_url}");
         } else {
-            $error = "Error Code: {$result->status} | {$result->message} | {$merchantCode}";
+            $error = "Error Code: {$result->status} | {$result->message} | {$this->merchantCode}";
             $data->status_gateway = $result->status;
             $data->status = -1001;
             if ($data->response_bk)
@@ -74,20 +72,17 @@ class Novinopay
 
     public function verifyPayment(Request $request)
     {
-        if (!$gatewayData = Gateway::where('name', 'NovinoPay')->first()) abort(404);
         if ($request->has('PaymentStatus') && $request->input('PaymentStatus') == "OK") {
 
             $Authority = ($request->has('Authority') && !empty($request->input('Authority'))) ? $request->input('Authority') : "";
 
             if ($paymentData = Payment::where('authority', $Authority)->where('gateway', 'NovinoPay')->first()) {
 
-                $merchantCode = ($gatewayData->sandbox ? 'test' : $gatewayData->merchant);
-
                 if ($paymentData->currency != 'rial') $amount = (float) $paymentData->amount * 10;
                 else $amount = (float) $paymentData->amount;
                 
                 $data = [
-                    "merchant_id" => $merchantCode,
+                    "merchant_id" => $this->merchantCode,
                     "amount" => (int) $amount,
                     "authority" => $Authority
                 ];
@@ -119,7 +114,7 @@ class Novinopay
                 } else {
                     $paymentData->status_gateway = $result->status;
                     $paymentData->status = -1101;
-                    $error = "Error Code: {$result->status} | {$result->message} | {$merchantCode}";
+                    $error = "Error Code: {$result->status} | {$result->message} | {$this->merchantCode}";
                     if ($paymentData->response_bk)
                         $paymentData->response_bk .= " | {$error}";
                     else

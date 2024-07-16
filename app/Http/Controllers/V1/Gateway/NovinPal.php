@@ -5,34 +5,33 @@
  * Copyright by Arvin Loripour 
  * WebSite : http://www.arvinlp.ir 
  * @Last Modified by: Arvin.Loripour
- * @Last Modified time: 2024-07-16 12:00:45
+ * @Last Modified time: 2024-07-16 13:13:23
  */
 
 namespace App\Http\Controllers\V1\Gateway;
 
-use App\Models\Gateway;
 use App\Models\Payment;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Redirect;
 
-class NovinPal
-{
+class NovinPal{
 
-    public function __construct()
-    {
+    private $API_KEY;
+
+    public function __construct(){
+        $this->API_KEY = (Config::get('gateway.novinpal.sandbox') ? '' : Config::get('gateway.novinpal.merchant'));
     }
 
     public function createPayment($data)
     {
-        if (!$gatewayData = Gateway::where('name', 'NovinPal')->first()) abort(404);
         if ($data->currency != 'rial') $amount = (float) $data->amount * 10;
         else $amount = (float) $data->amount;
-
-        $merchantCode = ($gatewayData->sandbox ? 'test' : $gatewayData->merchant);
-        $order_id = $gatewayData->code;
+        
+        $order_id = $data->code;
 
         $gateData = [
-            "api_key" => $merchantCode,
+            "api_key" => $this->API_KEY,
             "amount" => $amount, //// rial
             "order_id" => $order_id,
             "return_url" => route('payment.novinpal')
@@ -56,7 +55,7 @@ class NovinPal
             
             return Redirect::to('https://api.novinpal.ir/invoice/start/'.$result->refId);
         } else {
-            $error = "Error Code: {$result->status} | {$result->errorCode} | {$result->errorDescription} | {$merchantCode}";
+            $error = "Error Code: {$result->status} | {$result->errorCode} | {$result->errorDescription} | {$this->API_KEY}";
             $data->status_gateway = $result->status;
             $data->status = -1001;
             if ($data->response_bk)
@@ -76,17 +75,14 @@ class NovinPal
 
     public function verifyPayment(Request $request)
     {
-        if (!$gatewayData = Gateway::where('name', 'NovinPal')->first()) abort(404);
         if ($request->has('success') && $request->input('success') == "1") {
 
             $refId = ($request->has('refId') && !empty($request->input('refId'))) ? $request->input('refId') : "";
 
             if ($paymentData = Payment::where('refid', $refId)->where('gateway', 'NovinPal')->first()) {
 
-                $merchantCode = ($gatewayData->sandbox ? 'test' : $gatewayData->merchant);
-
                 $data = [
-                    "merchant_id" => $merchantCode,
+                    "api_key" => $this->API_KEY,
                     "ref_id" => $refId
                 ];
 
@@ -117,7 +113,7 @@ class NovinPal
                 } else {
                     $paymentData->status_gateway = $result->status;
                     $paymentData->status = -1101;
-                    $error = "Error Code: {$result->status} | {$result->message} | {$merchantCode}";
+                    $error = "Error Code: {$result->status} | {$result->message} | {$this->API_KEY}";
                     if ($paymentData->response_bk)
                         $paymentData->response_bk .= " | {$error}";
                     else
