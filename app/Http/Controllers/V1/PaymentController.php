@@ -5,12 +5,17 @@
  * Copyright by Arvin Loripour 
  * WebSite : http://www.arvinlp.ir 
  * @Last Modified by: Arvin.Loripour
- * @Last Modified time: 2024-07-16 11:13:22
+ * @Last Modified time: 2024-07-16 12:43:51
  */
 namespace App\Http\Controllers\V1;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\V1\Gateway\Aqayepardakht;
 use App\Http\Controllers\V1\Gateway\Novinopay;
+use App\Http\Controllers\V1\Gateway\NovinPal;
+use App\Http\Controllers\V1\Gateway\Parspal;
+use App\Http\Controllers\V1\Gateway\Zarinpal;
+use App\Http\Controllers\V1\Gateway\Zibal;
 use App\Models\Merchant;
 use App\Models\Payment;
 use Illuminate\Http\Request;
@@ -41,8 +46,28 @@ class PaymentController extends Controller{
             $data->save();
             
             switch($request->input('gateway')){
-                default:
+                case 'NovinoPay':
                     $gateway = new Novinopay;
+                    $gateway->createPayment($data);
+                    break;
+                case 'NovinPal':
+                    $gateway = new NovinPal;
+                    $gateway->createPayment($data);
+                    break;
+                case 'Zibal':
+                    $gateway = new Zibal;
+                    $gateway->createPayment($data);
+                    break;
+                case 'Parspal':
+                    $gateway = new Parspal;
+                    $gateway->createPayment($data);
+                    break;
+                case 'Aqayepardakht':
+                    $gateway = new Aqayepardakht;
+                    $gateway->createPayment($data);
+                    break;
+                default:
+                    $gateway = new Zarinpal;
                     $gateway->createPayment($data);
                     break;
             }

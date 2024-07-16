@@ -5,7 +5,7 @@
  * Copyright by Arvin Loripour 
  * WebSite : http://www.arvinlp.ir 
  * @Last Modified by: Arvin.Loripour
- * @Last Modified time: 2024-07-16 11:31:55
+ * @Last Modified time: 2024-07-16 12:44:58
  */
 
 namespace App\Http\Controllers\V1\Gateway;
@@ -15,7 +15,7 @@ use App\Models\Payment;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
 
-class Novinopay
+class Zibal
 {
 
     public function __construct()
@@ -24,20 +24,21 @@ class Novinopay
 
     public function createPayment($data)
     {
-        if (!$gatewayData = Gateway::where('name', 'NovinoPay')->first()) abort(404);
+        if (!$gatewayData = Gateway::where('name', 'Zibal')->first()) abort(404);
         if ($data->currency != 'rial') $amount = (float) $data->amount * 10;
         else $amount = (float) $data->amount;
 
-        $merchantCode = ($gatewayData->sandbox ? 'test' : $gatewayData->merchant);
+        $merchantCode = ($gatewayData->sandbox ? 'zibal' : $gatewayData->merchant);
+        $order_id = $gatewayData->code;
 
         $gateData = [
-            "merchant_id" => $merchantCode,
+            "merchant" => $merchantCode,
             "amount" => $amount, //// rial
-            "callback_url" => route('payment.novinopay')
+            "callbackUrl" => route('payment.zibal')
         ];
 
         $curl = curl_init();
-        curl_setopt($curl, CURLOPT_URL, "https://api.novinopay.com/payment/ipg/v2/request");
+        curl_setopt($curl, CURLOPT_URL, "https://gateway.zibal.ir/v1/request");
         curl_setopt($curl, CURLOPT_HTTPHEADER, ["Content-Type" => "application/json"]);
         curl_setopt($curl, CURLOPT_POSTFIELDS, json_encode($gateData, JSON_UNESCAPED_UNICODE));
         curl_setopt($curl, CURLOPT_TIMEOUT, 50);
@@ -48,14 +49,14 @@ class Novinopay
 
         $result = json_decode($curl_exec);
 
-        if (isset($result->status) && $result->status == 100) {
-            $data->authority = $result->data->authority;
-            $data->transaction_id = $result->data->trans_id;
+        if (isset($result->status) && $result->status == 1) {
+            $data->transaction_id = $result->trackId;
             $data->save();
-            header("Location: {$result->data->payment_url}");
+            
+            return Redirect::to('https://gateway.zibal.ir/start/'.$result->trackId);
         } else {
-            $error = "Error Code: {$result->status} | {$result->message} | {$merchantCode}";
-            $data->status_gateway = $result->status;
+            $error = "Error Code: {$result->result} | {$result->message} | {$merchantCode}";
+            $data->status_gateway = $result->result;
             $data->status = -1001;
             if ($data->response_bk)
                 $data->response_bk .= " | {$error}";
@@ -74,26 +75,22 @@ class Novinopay
 
     public function verifyPayment(Request $request)
     {
-        if (!$gatewayData = Gateway::where('name', 'NovinoPay')->first()) abort(404);
-        if ($request->has('PaymentStatus') && $request->input('PaymentStatus') == "OK") {
+        if (!$gatewayData = Gateway::where('name', 'Zibal')->first()) abort(404);
+        if ($request->has('success') && $request->input('success') == "1") {
 
-            $Authority = ($request->has('Authority') && !empty($request->input('Authority'))) ? $request->input('Authority') : "";
+            $trackId = ($request->has('trackId') && !empty($request->input('trackId'))) ? $request->input('trackId') : "";
 
-            if ($paymentData = Payment::where('authority', $Authority)->where('gateway', 'NovinoPay')->first()) {
+            if ($paymentData = Payment::where('transaction_id', $trackId)->where('gateway', 'Zibal')->first()) {
 
-                $merchantCode = ($gatewayData->sandbox ? 'test' : $gatewayData->merchant);
+                $merchantCode = ($gatewayData->sandbox ? 'zibal' : $gatewayData->merchant);
 
-                if ($paymentData->currency != 'rial') $amount = (float) $paymentData->amount * 10;
-                else $amount = (float) $paymentData->amount;
-                
                 $data = [
-                    "merchant_id" => $merchantCode,
-                    "amount" => (int) $amount,
-                    "authority" => $Authority
+                    "merchant" => $merchantCode,
+                    "trackId" => $trackId
                 ];
 
                 $curl = curl_init();
-                curl_setopt($curl, CURLOPT_URL, "https://api.novinopay.com/payment/ipg/v2/verification");
+                curl_setopt($curl, CURLOPT_URL, "https://gateway.zibal.ir/v1/verify");
                 curl_setopt($curl, CURLOPT_HTTPHEADER, ["Content-Type" => "application/json"]);
                 curl_setopt($curl, CURLOPT_POSTFIELDS, json_encode($data, JSON_UNESCAPED_UNICODE));
                 curl_setopt($curl, CURLOPT_TIMEOUT, 50);
@@ -105,13 +102,13 @@ class Novinopay
                 $result = json_decode($curl_exec);
 
                 if (isset($result->status) && $result->status == 100) {
-                    $paymentData->response_bk .= " | Invoice Successfully Paid | Price: {$result->data->amount} Rial | RefID: {$result->data->ref_id}";
-                    $paymentData->ref_id = $result->data->ref_id;
+                    $paymentData->response_bk .= " | Invoice Successfully Paid | Price: {$result->amount} Rial | RefID: {$result->refNumber}";
+                    $paymentData->refid = $result->refNumber;
                     $paymentData->status_gateway = $result->status;
                     $paymentData->status = 200;
                     $paymentData->save();
                     if (isset($paymentData->callback_url)){
-                        $callbackData = $paymentData->callback_url."?amount={$amount}&transaction={$paymentData->transaction}&status=200&ref_id={$result->data->ref_id}";
+                        $callbackData = $paymentData->callback_url."?amount={$result->amount}&transaction={$paymentData->transaction}&status=200&ref_id={$result->refNumber}";
                         return Redirect::to($callbackData);
                     }else{
                         return view('payment', ['data' => $result->data]);
@@ -126,7 +123,7 @@ class Novinopay
                         $paymentData->response_bk = $error;
                     $paymentData->save();
                     if (isset($paymentData->callback_url)){
-                        $callbackData = $paymentData->callback_url."?amount={$amount}&transaction={$paymentData->transaction}&status=-1101";
+                        $callbackData = $paymentData->callback_url."?amount={$paymentData->amount}&transaction={$paymentData->transaction}&status=-1101";
                         return Redirect::to($callbackData);
                     }else{
                         return view('payment-faild', ['data' => $result]);

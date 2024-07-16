@@ -29,7 +29,7 @@ return new class extends Migration
             $table->string('payer_description')->nullable();
             $table->string('gateway')->nullable();
             $table->string('callback_url')->nullable();
-            $table->integer('status')->unsigned()->nullable()->default(0);
+            $table->string('status')->nullable()->default(0);
             $table->string('status_gateway')->nullable();
             $table->string('response_bk')->nullable();
             $table->timestamps();
