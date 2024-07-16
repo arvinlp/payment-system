@@ -19,8 +19,9 @@ return new class extends Migration
             $table->string('merchant')->nullable();
             $table->string('username')->nullable();
             $table->string('password')->nullable();
-            $table->string('status')->nullable();
+            $table->tinyInteger('status')->unsigned()->nullable()->default(1);
             $table->timestamps();
+            $table->unique(['name','merchant'],'gateways');
         });
     }
 

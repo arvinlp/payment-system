@@ -15,11 +15,13 @@ return new class extends Migration
             $table->bigIncrements('id');
             $table->unsignedBigInteger('user_id')->nullable();
             $table->string('name')->nullable();
-            $table->integer('merchant')->nullable();
+            $table->bigInteger('merchant')->nullable();
             $table->string('url')->nullable();
+            $table->tinyInteger('status')->unsigned()->nullable()->default(1);
             $table->timestamps();
 
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+            $table->unique('merchant','merchants');
         });
     }
 

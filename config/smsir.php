@@ -20,9 +20,9 @@ return [
     // set true if you want log to the database
     'db-log' => env('SMSIR_DB_LOG',false),
     // if you don't want to include admin panel routes set this to false
-    'panel-routes' => env('SMSIR_PANEL_ROUTES',true),
+    'panel-routes' => env('SMSIR_PANEL_ROUTES',false),
     /* Admin Panel Title */
     'title' => 'مدیریت پیامک ها',
     // How many log you want to show in sms-admin panel ?
-    'in-page' => env('SMSIR_PANEL_IN_PAGE',true)
+    'in-page' => env('SMSIR_PANEL_IN_PAGE',false)
 ];
