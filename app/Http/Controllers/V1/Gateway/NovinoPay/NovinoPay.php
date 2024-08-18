@@ -5,7 +5,7 @@
  * Copyright by Arvin Loripour 
  * WebSite : http://www.arvinlp.ir 
  * @Last Modified by: Arvin.Loripour
- * @Last Modified time: 2024-08-18 22:14:07
+ * @Last Modified time: 2024-08-18 22:50:42
  */
 
 namespace App\Http\Controllers\V1\Gateway\NovinoPay;
@@ -69,13 +69,6 @@ class NovinoPay extends Driver
         $details = $this->invoice->getDetails();
 
         $amount = $this->invoice->getAmount() * ($this->settings->currency == 'T' ? 10 : 1); // convert to rial
-
-        $orderId = crc32($this->invoice->getUuid()).time();
-        if (!empty($details['orderId'])) {
-            $orderId = $details['orderId'];
-        } elseif (!empty($details['order_id'])) {
-            $orderId = $details['order_id'];
-        }
         
         $data = array(
             "merchant_id"=> $this->settings->mode === "normal" ? $this->settings->merchantId : "test", //required
@@ -128,8 +121,8 @@ class NovinoPay extends Driver
     public function verify() : ReceiptInterface
     {
         $successFlag = Request::input('PaymentStatus');
-        $status = Request::input('status');
-        $orderId = Request::input('InvoiceID');
+        // $status = Request::input('status');
+        // $orderId = Request::input('InvoiceID');
         $transactionId = $this->invoice->getTransactionId() ?? Request::input('Authority');
 
         if ($successFlag != "NOK") {
@@ -177,16 +170,16 @@ class NovinoPay extends Driver
         return $receipt;
     }
 
-    private function translateStatus($status)
-    {
-        $translations = [
-            'NOK' => 'انصراف از پرداخت',
-        ];
+    // private function translateStatus($status)
+    // {
+    //     $translations = [
+    //         'NOK' => 'انصراف از پرداخت',
+    //     ];
 
-        $unknownError = 'خطای ناشناخته ای رخ داده است.';
+    //     $unknownError = 'خطای ناشناخته ای رخ داده است.';
 
-        return array_key_exists($status, $translations) ? $translations[$status] : $unknownError;
-    }
+    //     return array_key_exists($status, $translations) ? $translations[$status] : $unknownError;
+    // }
 
     /**
      * Trigger an exception
