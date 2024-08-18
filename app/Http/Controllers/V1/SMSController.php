@@ -15,11 +15,11 @@ use IPPanel\Errors\Error;
 class SMSController{
 
     private $sms;
-    private $apiKey = 'dJ6pj02Rp3o7Bv3A3lIUrRphb9d_YXkkMyGSOj__vUk=';
+    private $apiKey = '=';
     private $number = '+98100020400';
 
     public function __construct($apiKey=null,$number='+98100020400'){
-        $this->apiKey = env('VIRA_SMS_API_KEY','dJ6pj02Rp3o7Bv3A3lIUrRphb9d_YXkkMyGSOj__vUk=');
+        $this->apiKey = env('VIRA_SMS_API_KEY','=');
         $this->number = env('VIRA_SMS_NUMBER','+98100020400');
         if($apiKey) $this->apiKey = $apiKey;
         if($number) $this->number = $number;
