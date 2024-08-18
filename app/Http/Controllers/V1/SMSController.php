@@ -1,0 +1,242 @@
+<?php
+/*
+ * @Author: arvinlp 
+ * @Date: 2022-04-17 16:40:56 
+ * Copyright by Arvin Loripour 
+ * WebSite : http://www.arvinlp.ir 
+ * @Last Modified by: Arvin.Loripour
+ * @Last Modified time: 2023-03-21 15:06:16
+ */
+namespace App\Http\Controllers\V1;
+
+use IPPanel\Client;
+use IPPanel\Errors\Error;
+
+class SMSController{
+
+    private $sms;
+    private $apiKey = 'dJ6pj02Rp3o7Bv3A3lIUrRphb9d_YXkkMyGSOj__vUk=';
+    private $number = '+98100020400';
+
+    public function __construct($apiKey=null,$number='+98100020400'){
+        $this->apiKey = env('VIRA_SMS_API_KEY','dJ6pj02Rp3o7Bv3A3lIUrRphb9d_YXkkMyGSOj__vUk=');
+        $this->number = env('VIRA_SMS_NUMBER','+98100020400');
+        if($apiKey) $this->apiKey = $apiKey;
+        if($number) $this->number = $number;
+    }
+
+    public function getCredit(){
+        $client = new Client($this->apiKey);
+        $credit = $client->getCredit();
+        return $credit;
+    }
+
+    public function sendToMany($recipients = null, $message = null){
+
+        try{
+            if($recipients == null) return false;
+            if($message == null) return false;
+            $client = new Client($this->apiKey);
+            $bulkID = $client->send(
+                $this->number,
+                $recipients,
+                $message,
+                ''
+            );
+            return $bulkID;
+        } catch (Error $e) {
+            return $e;
+        }
+    }
+
+    public function getSendInfo($bulkID = null){
+        try{
+            if($bulkID == null) return false;
+            $client = new Client($this->apiKey);
+            $message = $client->get_message($bulkID);
+            return $message;
+        }catch (Error $e) {
+            return false;
+        }
+    }
+
+    public function sendPassword(float $recipient, $name = "کاربر", $code){
+        try{
+            if($recipient == null) return false;
+            if($code == null) return false;
+            if($name == null) "کاربر";
+            $client = new Client($this->apiKey);
+            $patternValues = [
+                "name" => "{$name}",
+                "code" => "{$code}",
+            ];
+            
+            $bulkID = $client->sendPattern(
+                "x0tpqx98qawrfzy",
+                $this->number,
+                "+98{$recipient}",
+                $patternValues
+            );
+            return $bulkID;
+        } catch (Error $e) {
+            return $e;
+        }
+    }
+
+    public function verifyCode(float $recipient, $name = "کاربر", $code){
+        try{
+            if($recipient == null) return false;
+            if($code == null) return false;
+            if($name == null) "کاربر";
+            $client = new Client($this->apiKey);
+            $patternValues = [
+                "name" => "{$name}",
+                "code" => "{$code}",
+            ];
+            
+            $bulkID = $client->sendPattern(
+                "x0tpqx98qawrfzy",
+                $this->number,
+                "+98{$recipient}",
+                $patternValues
+            );
+            return $bulkID;
+        } catch (Error $e) {
+            return $e;
+        }
+    }
+
+    public function expireSub(float $recipient, $name = "کاربر", $day){
+        try{
+            if($recipient == null) return false;
+            if($day == null) return false;
+            if($name == null) "کاربر";
+            $client = new Client($this->apiKey);
+            $patternValues = [
+                "name" => "{$name}",
+                "day" => "{$day}",
+            ];
+            
+            $bulkID = $client->sendPattern(
+                "6p5jgi2ptirjwwk",
+                $this->number,
+                "+98{$recipient}",
+                $patternValues
+            );
+            return $bulkID;
+        } catch (Error $e) {
+            return $e;
+        }
+    }
+
+    public function verifyCodeByAnother(float $recipient, $name = "کاربر", $number, $code){
+        try{
+            if($recipient == null) return false;
+            if($code == null) return false;
+            if($name == null) "کاربر";
+            if($number == null) return false;
+            $client = new Client($this->apiKey);
+            $patternValues = [
+                "name" => "{$name}",
+                "code" => "{$code}",
+                "number" => "{$number}",
+            ];
+            
+            $bulkID = $client->sendPattern(
+                "zzejnf0y3ipgr1i",
+                $this->number,
+                "+98{$recipient}",
+                $patternValues
+            );
+            return $bulkID;
+        } catch (Error $e) {
+            return $e;
+        }
+    }
+
+    public function wallet(float $recipient, $name = "کاربر", $amount){
+        try{
+            if($recipient == null) return false;
+            if($amount == null) return false;
+            if($name == null) "کاربر";
+            $client = new Client($this->apiKey);
+            $patternValues = [
+                "name" => "{$name}",
+                "amount" => "{$amount}",
+            ];
+            
+            $bulkID = $client->sendPattern(
+                "okqgxlwx3mx3eor",
+                $this->number,
+                "+98{$recipient}",
+                $patternValues
+            );
+            return $bulkID;
+        } catch (Error $e) {
+            return $e;
+        }
+    }
+
+    public function payment(float $recipient, $name = "کاربر"){
+        try{
+            if($recipient == null) return false;
+            if($name == null) "کاربر";
+            $client = new Client($this->apiKey);
+            $patternValues = [
+                "name" => "{$name}",
+            ];
+            
+            $bulkID = $client->sendPattern(
+                "okqgxlwx3mx3eor",
+                $this->number,
+                "+98{$recipient}",
+                $patternValues
+            );
+            return $bulkID;
+        } catch (Error $e) {
+            return $e;
+        }
+    }
+
+    public function sendNotification(float $recipient, $name = "کاربر"){
+        try{
+            if($recipient == null) return false;
+            if($name == null) "کاربر";
+            $client = new Client($this->apiKey);
+            $patternValues = [
+                "name" => "{$name}",
+            ];
+            
+            $bulkID = $client->sendPattern(
+                "zob7mgqxgc9pisc",
+                $this->number,
+                "+98{$recipient}",
+                $patternValues
+            );
+            return $bulkID;
+        } catch (Error $e) {
+            return $e;
+        }
+    }
+
+    public function alertService(float $recipient, $name = "کاربر"){
+        try{
+            if($recipient == null) return false;
+            if($name == null) return false;
+            $client = new Client($this->apiKey);
+            $patternValues = [
+                "name" => "{$name}",
+            ];
+            
+            $bulkID = $client->sendPattern(
+                "6p5jgi2ptirjwwk",
+                $this->number,
+                "+98{$recipient}",
+                $patternValues
+            );
+            return $bulkID;
+        } catch (Error $e) {
+            return $e;
+        }
+    }
+}
