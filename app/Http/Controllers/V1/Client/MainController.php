@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\DB;
 class MainController extends Controller{
 
     public function index(){
-        return redirect()->route('admin.dashboard')->with('message', __('Welcome'));
+        return redirect()->route('admin.dashboard')->with('message', __('خوش آمدید'));
     }
 
 }

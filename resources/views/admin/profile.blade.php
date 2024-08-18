@@ -1,4 +1,7 @@
 @extends('includes.panel.base')
+@section('page_title')
+    @lang('پروفایل من')
+@endsection
 @section('content')
     <form action="{{ route('admin.profile') }}" method="POST" enctype="multipart/form-data">
         @csrf
@@ -7,14 +10,11 @@
                 <div class="col-12">
                     <div class="card">
                         <div class="card-body">
-                            <div class="card-title">
-                                <h3>@lang('My Profile')</h3>
-                            </div>
                             <div class="row g-3">
                                 <div class="col-12 col-md-6">
                                     <div class="row align-items-center">
                                         <div class="col-12 col-md-3">
-                                            <label for="fname">@lang('First Name')</label>
+                                            <label for="fname">@lang('نام')</label>
                                         </div>
                                         <div class="col-12 col-md-9">
                                             <input id="fname" name="fname"
@@ -26,7 +26,7 @@
                                 <div class="col-12 col-md-6">
                                     <div class="row align-items-center">
                                         <div class="col-12 col-md-3">
-                                            <label for="lname">@lang('Last Name')</label>
+                                            <label for="lname">@lang('نام خانوادگی')</label>
                                         </div>
                                         <div class="col-12 col-md-9">
                                             <input id="lname" name="lname"
@@ -38,7 +38,7 @@
                                 <div class="col-12 col-md-6">
                                     <div class="row align-items-center">
                                         <div class="col-12 col-md-3">
-                                            <label for="email">@lang('Email')</label>
+                                            <label for="email">@lang('پست الکترونیک')</label>
                                         </div>
                                         <div class="col-12 col-md-9">
                                             <input id="email" name="email"
@@ -50,7 +50,7 @@
                                 <div class="col-12 col-md-6">
                                     <div class="row align-items-center">
                                         <div class="col-12 col-md-3">
-                                            <label for="mobile">@lang('Mobile')</label>
+                                            <label for="mobile">@lang('موبایل')</label>
                                         </div>
                                         <div class="col-12 col-md-9">
                                             <input id="mobile" name="mobile" type="number"
@@ -62,7 +62,7 @@
                                 <div class="col-12 col-md-6">
                                     <div class="row align-items-center">
                                         <div class="col-12 col-md-3">
-                                            <label for="password">@lang('Password')</label>
+                                            <label for="password">@lang('گذرواژه')</label>
                                         </div>
                                         <div class="col-12 col-md-9">
                                             <input id="password" name="password" type="password"
@@ -73,7 +73,7 @@
                                 <div class="col-12 col-md-6">
                                     <div class="row align-items-center">
                                         <div class="col-12 col-md-3">
-                                            <label for="password_confirmation">@lang('Password Confirm')</label>
+                                            <label for="password_confirmation">@lang('تایید گذرواژه')</label>
                                         </div>
                                         <div class="col-12 col-md-9">
                                             <input id="password_confirmation" name="password_confirmation" type="password"
@@ -85,12 +85,12 @@
                             <div class="row g-3 mt-3 align-items-center">
                                 <div class="col-12 col-md-6">
                                     <button class="btn btn-sm btn-outline-primary" type="submit">
-                                        @lang('Save')
+                                        @lang('بروزرسانی')
                                     </button>
                                 </div>
                                 <div class="col-12 col-md-6 text-md-end">
-                                    <a class="btn btn-sm btn-danger" href="{{ route('admin.staffs') }}">
-                                        @lang('Cancel & Back')
+                                    <a class="btn btn-sm btn-danger" href="{{ route('client.dashboard') }}">
+                                        @lang('بازگشت')
                                     </a>
                                 </div>
                             </div>

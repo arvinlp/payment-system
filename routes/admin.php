@@ -40,6 +40,19 @@ Route::group(['prefix' => 'clients'], function () {
     Route::delete('/{id}',  'ClientController@destroy')->name('clients.delete');
 });
 
+Route::group(['prefix'=>'payments'],function (){
+    Route::get('/', 'PaymentController@getAll')->name('payments');
+    Route::get('/{id}', 'PaymentController@get')->name('payments.show');
+});
+
+Route::group(['prefix'=>'currencies'],function (){
+    Route::get('/', 'CurrencyController@getAll')->name('currencies');
+    Route::post('/new', 'CurrencyController@store')->name('currencies.new');
+    Route::get('/{id}', 'CurrencyController@get')->name('currencies.edit');
+    Route::post('/{id}', 'CurrencyController@update');
+    Route::delete('/{id}', 'CurrencyController@destroy')->name('currencies.delete');
+});
+
 Route::group(['prefix'=>'merchants'],function (){
     Route::get('/', 'MerchantController@getAll')->name('merchants');
     Route::post('/new', 'MerchantController@store')->name('merchants.new');
@@ -48,12 +61,12 @@ Route::group(['prefix'=>'merchants'],function (){
     Route::delete('/{id}', 'MerchantController@destroy')->name('merchants.delete');
 });
 
-Route::group(['prefix'=>'gatewayes'],function (){
-    Route::get('/', 'GatewayController@getAll')->name('gatewayes');
-    Route::post('/new', 'GatewayController@store')->name('gatewayes.new');
-    Route::get('/{id}', 'GatewayController@get')->name('gatewayes.edit');
+Route::group(['prefix'=>'gateways'],function (){
+    Route::get('/', 'GatewayController@getAll')->name('gateways');
+    Route::post('/new', 'GatewayController@store')->name('gateways.new');
+    Route::get('/{id}', 'GatewayController@get')->name('gateways.edit');
     Route::post('/{id}', 'GatewayController@update');
-    Route::delete('/{id}', 'GatewayController@destroy')->name('gatewayes.delete');
+    Route::delete('/{id}', 'GatewayController@destroy')->name('gateways.delete');
 });
 
 Route::group(['prefix'=>'notifications'],function (){

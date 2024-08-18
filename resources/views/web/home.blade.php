@@ -4,13 +4,13 @@
         <meta charset="UTF-8" />
         <meta http-equiv="X-UA-Compatible" content="ie=edge" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no" />
-        <meta name="description" content="ای می قالب چند منظوره برای ارائه دهندگان میزبانی وب" />
-        <meta property="og:site_name" content="emyUI" />
-        <meta property="og:url" content="https://designesia.ir" />
+        <meta name="description" content="سیستم پرداخت آسان" />
+        <meta property="og:site_name" content="سیستم پرداخت آسان" />
+        <meta property="og:url" content="https://arvinlp.ir" />
         <meta property="og:type" content="website" />
-        <meta property="og:title" content="ایمی یو آی" />
-        <meta name="author" content="designesia.ir (Amin Chavepour)" />
-        <title>ای می | قالب چند منظوره برای ارائه دهندگان میزبانی وب</title>
+        <meta property="og:title" content="سیستم پرداخت آسان" />
+        <meta name="author" content="Arvin Loripour" />
+        <title>سیستم پرداخت آسان</title>
 
         <!-- favicon -->
         <link rel="shortcut icon" href="{{ asset('web/image/favicon/favicon.png') }}" type="image/x-icon"/>
@@ -84,8 +84,12 @@
 
                         <!-- START header left buttons -->
                         <div class="header-btn ml-auto ml-lg-10 mr-5 d-none d-xs-block position-relative">
-                            <a class="btn btn-outline-light btn-auto-min-width px-7 coodiv-text-9 mr-2" href="#">ورود</a>
-                            <a class="btn btn-warning btn-auto-min-width px-7 coodiv-text-9" href="#">شروع کنید</a>
+                            @if(Auth::check())
+                            <a class="btn btn-outline-light btn-auto-min-width px-7 coodiv-text-9 mr-2" href="{{ route('client.dashboard') }}">پنل کاربری</a>
+                            @else
+                            <a class="btn btn-outline-light btn-auto-min-width px-7 coodiv-text-9 mr-2" href="{{ route('auth.login.pass') }}">ورود</a>
+                            <a class="btn btn-warning btn-auto-min-width px-7 coodiv-text-9" href="{{ route('auth.login.code') }}">شروع کنید</a>
+                            @endif
                         </div>
                         <!-- START header left buttons -->
 

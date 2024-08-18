@@ -24,11 +24,12 @@
                     <div class="card-body">
                         <h5 class="card-title">
                             <i class="fa fa-users"></i>
-                            @lang('فروشندگان')
+                            @lang('پایانه‌ها')
                         </h5>
                         <h6 class="card-subtitle mb-2 text-muted ">
-                            @lang(':count فروشنده', ['count' => $countMerchants])
+                            @lang(':count پایانه‌ها', ['count' => $countMerchants])
                         </h6>
+                        <a href="{{ route('admin.merchants') }}">@lang('مشاهده')</a>
                     </div>
                 </div>
             </div>

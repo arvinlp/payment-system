@@ -23,30 +23,30 @@ class GatewayController extends Controller{
     public function getAll(Request $request){
         self::checkAccessLevel(0);
         $data = SearchFilter::apply($request, new Gateway, 'all');
-        return $this->getView('currencies',['data'=> $data]);
+        return $this->getView('gateways',['data'=> $data]);
     }
     
     public function get(Request $request, $id){
         self::checkAccessLevel(0);
         $editData = Gateway::findOrFail($id);
         $data = SearchFilter::apply($request, new Gateway, 'all');
-        return $this->getView('currencies',['data'=> $data, 'editData'=> $editData, 'id' => $id]);
+        return $this->getView('gateways',['data'=> $data, 'editData'=> $editData, 'id' => $id]);
     }
 
     public function store(Request $request){
         self::checkAccessLevel(0);
         try{
             $data = new Gateway;
-            if($request->has('code'))$data->code = $request->input('code');
             if($request->has('name'))$data->name = $request->input('name');
-            if($request->has('location'))$data->location = $request->input('location');
-            if($request->has('exchange'))$data->exchange = $request->input('exchange');
+            if($request->has('username'))$data->username = $request->input('username');
+            if($request->has('password'))$data->password = $request->input('password');
+            if($request->has('merchant_id'))$data->merchant_id = $request->input('merchant_id');
             if($request->has('status'))$data->status = $request->input('status');
             
             $data->save();
-            return redirect()->route('admin.currencies')->with('success', __(':name با موفقیت افزوده شد.',['name'=>'کوپن']));
+            return redirect()->route('admin.gateways')->with('success', __(':name با موفقیت افزوده شد.',['name'=>'درگاه']));
         }catch(\Exception $e){
-            return redirect()->route('admin.currencies')->with('error', __('خطایی در افزودن :name رخ داد مجدد سعی نمایید..',['name'=>'کوپن']));
+            return redirect()->route('admin.gateways')->with('error', __('خطایی در افزودن :name رخ داد مجدد سعی نمایید..',['name'=>'درگاه']));
         }
     }
     
@@ -54,15 +54,15 @@ class GatewayController extends Controller{
         self::checkAccessLevel(0);
         try{
             $data = Gateway::findOrfail($id);
-            if($request->has('code'))$data->code = $request->input('code');
             if($request->has('name'))$data->name = $request->input('name');
-            if($request->has('location'))$data->location = $request->input('location');
-            if($request->has('exchange'))$data->exchange = $request->input('exchange');
+            if($request->has('username'))$data->username = $request->input('username');
+            if($request->has('password'))$data->password = $request->input('password');
+            if($request->has('merchant_id'))$data->merchant_id = $request->input('merchant_id');
             if($request->has('status'))$data->status = $request->input('status');
             $data->save();
-            return redirect()->route('admin.currencies')->with('success', __(':name با موفقیت ویرایش شد.',['name'=>'کوپن']));
+            return redirect()->route('admin.gateways')->with('success', __(':name با موفقیت ویرایش شد.',['name'=>'درگاه']));
         }catch(\Exception $e){
-            return redirect()->route('admin.currencies')->with('error', __('خطایی در ویرایش :name رخ داد مجدد سعی نمایید.',['name'=>'کوپن']));
+            return redirect()->route('admin.gateways')->with('error', __('خطایی در ویرایش :name رخ داد مجدد سعی نمایید.',['name'=>'درگاه']));
         }
     }
 
@@ -71,9 +71,9 @@ class GatewayController extends Controller{
         try{
             $data = Gateway::findOrfail($id);
             $data->delete();
-            return redirect()->route('admin.currencies')->with('success', __(':name با موفقیت حذف شد.',['name'=>'کوپن']));
+            return redirect()->route('admin.gateways')->with('success', __(':name با موفقیت حذف شد.',['name'=>'درگاه']));
         }catch(\Exception $e){
-            return redirect()->route('admin.currencies')->with('error', __('خطایی در حذف :name رخ داد مجدد سعی نمایید.',['name'=>'کوپن']));
+            return redirect()->route('admin.gateways')->with('error', __('خطایی در حذف :name رخ داد مجدد سعی نمایید.',['name'=>'درگاه']));
         }
     }
 }

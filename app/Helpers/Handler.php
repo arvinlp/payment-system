@@ -8,6 +8,7 @@
  * @Last Modified time: 2024-07-16 10:37:49
  */
 
+use App\Models\Merchant;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;
@@ -68,6 +69,202 @@ if( ! function_exists('uniqueRandomInt') ){
         while(!$unique);
         return $random;
     }
+}
+
+function getUserLevel($id = 0)
+{
+    $args = array(
+        0 => 'دسترسی کامل',
+        1 => 'دسترسی نامشخص',
+        2 => 'دسترسی نامشخص',
+        3 => 'دسترسی نامشخص',
+        4 => 'دسترسی نامشخص',
+        5 => 'دسترسی نامشخص',
+        6 => 'دسترسی نامشخص',
+        7 => 'دسترسی نامشخص',
+        8 => 'دسترسی نامشخص',
+        9 => 'دسترسی نامشخص',
+        10 => 'دسترسی نامشخص',
+        11 => 'دسترسی نامشخص'
+    );
+    $argsBack = $args[$id];
+    return $argsBack;
+}
+
+function getUserLevels()
+{
+    $args = array(
+        0 => 'دسترسی کامل',
+        1 => 'دسترسی نامشخص',
+        2 => 'دسترسی نامشخص',
+        3 => 'دسترسی نامشخص',
+        4 => 'دسترسی نامشخص',
+        5 => 'دسترسی نامشخص',
+        6 => 'دسترسی نامشخص',
+        7 => 'دسترسی نامشخص',
+        8 => 'دسترسی نامشخص',
+        9 => 'دسترسی نامشخص',
+        10 => 'دسترسی نامشخص',
+        11 => 'دسترسی نامشخص'
+    );
+    return $args;
+}
+
+/**
+ * 
+ */
+function getUserTypes()
+{
+    $args = array(
+        'staff' => 'کارمند',
+        'client' => 'مشتری',
+        'reseller' => 'فروشنده'
+    );
+    return $args;
+}
+function getUserType($code = 'client')
+{
+    $args = getUserTypes();
+    return $args[$code];
+}
+
+/**
+ * 
+ */
+function statusCode()
+{
+    return array(
+        1 => __('فعال'),
+        0 => __('غیرفعال'),
+    );
+}
+function status($code)
+{
+    $args = statusCode();
+    return $args[$code];
+}
+
+/**
+ * 
+ */
+function userStatusCode()
+{
+    return array(
+        1 => __('فعال'),
+        0 => __('غیرفعال'),
+        2 => __('مسدود'),
+    );
+}
+function userStatus($code)
+{
+    $args = userStatusCode();
+    return $args[$code];
+}
+
+/**
+ * 
+ */
+function alertCode()
+{
+    return array(
+        'primary' => __('پیش فرض'),
+        'secondary' => __('ثانویه'),
+        'success' => __('موفق'),
+        'danger' => __('خطر'),
+        'warning' => __('اخطار'),
+        'info' => __('اطلاع'),
+        'light' => __('روشن'),
+        'dark' => __('تیره'),
+    );
+}
+function alert($code)
+{
+    $args = alertCode();
+    return $args[$code];
+}
+
+/**
+ * 
+ */
+function paymentStatusCode()
+{
+    return array(
+        1 => __('فعال'),
+        0 => __('غیرفعال'),
+        2 => __('پرداخت شده'),
+        3 => __('پیش فرض'),
+        4 => __('در انتظار تمدید'),
+        5 => __('در انتظار تمدید'),
+        6 => __('در انتظار تمدید'),
+        7 => __('پرداخت نشده + در انتظار تمدید مجدد'),
+        8 => __('پرداخت نشده + در انتظار تمدید مجدد'),
+        9 => __('پرداخت آنلاین'),
+        10 => __('پرداخت نقدی'),
+        -1 => __('نامشخص'),
+        -2 => __('نامشخص'),
+        -3 => __('نامشخص'),
+    );
+}
+function paymentStatus($code)
+{
+    $args = paymentStatusCode();
+    return $args[$code];
+}
+
+/**
+ * 
+ */
+function currencyLocationCode()
+{
+    return array(
+        1 => __('راست'),
+        2 => __('چپ'),
+        3 => __('راست با فاصله'),
+        4 => __('چپ با فاصله'),
+    );
+}
+function currencyLocation($code)
+{
+    $args = currencyLocationCode();
+    return $args[$code];
+}
+
+/**
+ * 
+ */
+function currencyStatusCode()
+{
+    return array(
+        1 => __('فعال'),
+        0 => __('غیرفعال'),
+        2 => __('پیش فرض')
+    );
+}
+function currencyStatus($code)
+{
+    $args = currencyStatusCode();
+    return $args[$code];
+}
+
+/**
+ * 
+ */
+function paymentDriverCode()
+{
+    return array(
+        'paypal' => __('پی پال'),
+        'zarinpal' => __('زرین پال'),
+        'zibal' => __('زیبال'),
+        'arvinlp.ir' => __('شخصی'),
+        'pay.ir' => __('پی دات ای ار'),
+        'aqayepardakht.ir' => __('آقای پرداخت'),
+    );
+}
+function paymentDriver($code)
+{
+    if (!isset($code)) return __('نامشخص');
+    $args = paymentDriverCode();
+    return $args[Str::lower($code)];
 }
 
 /**
@@ -140,4 +337,67 @@ function genNickname($fname = null, $lname = null, $mobile = 0)
     if ($lname != null) $nickname .= $lname;
     if ($fname != null || $lname != null) return $nickname;
     else return $nickname = __('کاربر ') . $mobile;
+}
+/**
+ * 
+ */
+function freeMerchant()
+{
+    do {
+        $args = rand(101010101010, 919199999919);
+    } while (
+        Merchant::where('merchant', $args)
+        ->first() && $args != 8080
+        && $args != 4085
+        && $args != 22
+        && $args != 21
+        && $args != 80
+        && $args != 443
+        && $args != 443
+    );
+    return $args;
+}
+
+/**
+ * 
+ */
+function priceWithCurrency($price = '', $getCurrency = null)
+{
+    $defaultCurrency = 1;
+    if ($price <= 0) return 'رایگان';
+    if ($price == '') return 'رایگان';
+    if (Auth::check()) {
+        if ($userDefaultCurrency = Auth::user()->currency_id) {
+            $defaultCurrency = $userDefaultCurrency;
+        }
+    } else {
+        if ($currency = \App\Models\Currency::where('status', 2)->first()) {
+            $defaultCurrency = $currency->id;
+        }
+    }
+    if ($getCurrency != null) {
+        $defaultCurrency = $getCurrency;
+    }
+    $currency = \App\Models\Currency::find($defaultCurrency);
+    if ($currency->code == 'IRR') {
+        $price *= $currency->exchange;
+        $price = number_format($price, 0);
+    } elseif ($currency->code == 'IRT') {
+        $price = number_format($price, 0);
+    } else {
+        $price /= $currency->exchange;
+        $price = number_format($price, 2);
+    }
+    switch ($currency->location) {
+        case 1:
+            return $price . $currency->name;
+        case 2:
+            return $currency->name . $price;
+        case 3:
+            return $price . ' ' . $currency->name;
+        case 4:
+            return $currency->name . ' ' . $price;
+        default:
+            return $price . $currency->name;
+    }
 }

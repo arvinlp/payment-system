@@ -13,7 +13,7 @@ use App\Http\Controllers\V1\BaseController as Controller;
 use Illuminate\Http\Request;
 use App\SearchFilters\SearchFilter;
 
-use App\Models\UserPayment;
+use App\Models\Payment;
 
 class PaymentController extends Controller{
     
@@ -22,13 +22,13 @@ class PaymentController extends Controller{
 
     public function getAll(Request $request){
         self::checkAccessLevel(5);
-        $data = SearchFilter::apply($request, UserPayment::with(['user','currency']), 'all');
-        return $this->getView('user-payments.list',['data'=> $data]);
+        $data = SearchFilter::apply($request, Payment::with(['user','merchant']), 'all');
+        return $this->getView('payments.list',['data'=> $data]);
     }
     
     public function get(Request $request, $id){
         self::checkAccessLevel(5);
-        $editData = UserPayment::with(['user','currency','service'])->findOrFail($id);
-        return $this->getView('user-payments.show',['data'=> $editData]);
+        $editData = Payment::with(['user','merchant'])->findOrFail($id);
+        return $this->getView('payments.show',['data'=> $editData]);
     }
 }

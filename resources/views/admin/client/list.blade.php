@@ -37,11 +37,6 @@
                                             <td>
                                                 <div class="btn-group" role="group" aria-label="action">
                                                     <a href="{{ route('admin.clients.show', ['id' => $item->id]) }}"
-                                                        name="@lang('ورود')"
-                                                        class="btn btn-primary btn-sm">
-                                                        <i class="fa-solid fa-sign-in"></i>
-                                                    </a>
-                                                    <a href="{{ route('admin.clients.show', ['id' => $item->id]) }}"
                                                         name="@lang('مشاهده')"
                                                         class="btn btn-primary btn-sm">
                                                         <i class="fa-solid fa-eye"></i>
