@@ -15,6 +15,7 @@ return new class extends Migration
         Schema::create('gateways', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('name')->nullable();
+            $table->string('driver')->nullable();
             $table->string('username')->nullable();
             $table->string('password')->nullable();
             $table->string('merchant_id')->nullable();

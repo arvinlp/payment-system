@@ -38,6 +38,7 @@ class GatewayController extends Controller{
         try{
             $data = new Gateway;
             if($request->has('name'))$data->name = $request->input('name');
+            if($request->has('driver'))$data->driver = $request->input('driver');
             if($request->has('username'))$data->username = $request->input('username');
             if($request->has('password'))$data->password = $request->input('password');
             if($request->has('merchant_id'))$data->merchant_id = $request->input('merchant_id');
@@ -55,6 +56,7 @@ class GatewayController extends Controller{
         try{
             $data = Gateway::findOrfail($id);
             if($request->has('name'))$data->name = $request->input('name');
+            if($request->has('driver'))$data->driver = $request->input('driver');
             if($request->has('username'))$data->username = $request->input('username');
             if($request->has('password'))$data->password = $request->input('password');
             if($request->has('merchant_id'))$data->merchant_id = $request->input('merchant_id');

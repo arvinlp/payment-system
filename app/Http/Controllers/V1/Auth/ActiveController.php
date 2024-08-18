@@ -78,7 +78,7 @@ class ActiveController extends Controller{
     private function passwordGenerate(){
         $code = random_int(11110,9999999);
         
-        return 'smm'.$code;
+        return 'alp'.$code;
     }
 
     private function checkUserStatus($mobile){

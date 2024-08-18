@@ -5,7 +5,7 @@
  * Copyright by Arvin Loripour 
  * WebSite : http://www.arvinlp.ir 
  * @Last Modified by: Arvin.Loripour
- * @Last Modified time: 2024-07-16 10:37:49
+ * @Last Modified time: 2024-08-18 20:46:13
  */
 
 use App\Models\Merchant;
@@ -32,7 +32,7 @@ function replace_number_fa_en($number)
 }
 
 if( ! function_exists('uniqueRandomString') ){
-    function uniqueRandomString($table, $col, $chars = 16){
+    function uniqueRandomString($table, $col, $chars = 24){
         $unique = false;
         $tested = [];
         do{
@@ -252,12 +252,47 @@ function currencyStatus($code)
 function paymentDriverCode()
 {
     return array(
-        'paypal' => __('پی پال'),
         'zarinpal' => __('زرین پال'),
         'zibal' => __('زیبال'),
-        'arvinlp.ir' => __('شخصی'),
-        'pay.ir' => __('پی دات ای ار'),
-        'aqayepardakht.ir' => __('آقای پرداخت'),
+        'aqayepardakht' => __('آقای پرداخت'),
+        'nextpay' => __('نکست پی'),
+        'payping' => __('پی پینگ'),
+        'payir' => __('پی ای ار'),
+        'idpay' => __('ای دی پی'),
+        'paypal' => __('PayPal'),
+        'yekpay' => __('یک پی'),
+        'sepordeh' => __('سپرده'),
+        'rayanpay' => __('رایان پی'),
+        'novinopay' => __('نوینو پی'),
+        'novinpal' => __('نوین پال'),
+        'parspal' => __('پارس پال'),
+        'sizpay' => __('سیزپی'),
+        'vandar' => __('vandar'),
+        'gooyapay' => __('گویا پی'),
+        'fanavacard' => __('فن آوا'),
+        'atipay' => __('آتی پی'),
+        'asanpardakht' => __('آسان پرداهت'),
+        'behpardakht' => __('به پرداخت'),
+        'digipay' => __('دیجی پی'),
+        'etebarino' => __('اعتباری نو'),
+        'irankish' => __('ایران کیش'),
+        'jibit' => __('جیب بیت'),
+        'omidpay' => __('امید پی'),
+        'parsian' => __('پارسیان'),
+        'pasargad' => __('پاسارگاد'),
+        'paystar' => __('پی استار'),
+        'poolam' => __('یولام'),
+        'sadad' => __('سدداد'),
+        'saman' => __('سامان'),
+        'sep' => __('سپه'),
+        'sepehr' => __('سپهر'),
+        'walleta' => __('walleta'),
+        'azki' => __('ازکی'),
+        'payfa' => __('پی فا'),
+        'toman' => __('تومن'),
+        'bitpay' => __('بیت پی'),
+        'minipay' => __('minipay'),
+        'snapppay' => __('اسنپ پی'),
     );
 }
 function paymentDriver($code)
@@ -301,7 +336,6 @@ function getPrefixُTheme()
  */
 function uuidGenerator()
 {
-
     $data = random_bytes(16);
     $data[6] = chr(ord($data[6]) & 0x0f | 0x40); // set version to 0100
     $data[8] = chr(ord($data[8]) & 0x3f | 0x80); // set bits 6-7 to 10

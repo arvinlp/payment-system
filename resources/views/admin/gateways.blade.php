@@ -12,7 +12,11 @@
                             data-bs-toggle="collapse" data-bs-target="#collapseAddNewForm"
                             aria-expanded="@if (isset($editData)) true @else false @endif"
                             aria-controls="collapseAddNewForm">
-                            @lang('افزودن درگاه جدید')
+                            @if (isset($editData))
+                                @lang('ویرایش درگاه :name', ['name' => $editData->name])
+                            @else
+                                @lang('افزودن درگاه جدید')
+                            @endif
                         </button>
                     </h2>
                     <div id="collapseAddNewForm"
@@ -47,6 +51,23 @@
                                                         <input id="name" name="name"
                                                             @if (isset($editData)) value="{{ $editData->name != '' ? $editData->name : '' }}" @endif
                                                             class="form-control">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-12 col-md-6">
+                                                <div class="row align-items-center">
+                                                    <div class="col-12 col-md-3">
+                                                        <label for="driver">@lang('درایور')</label>
+                                                    </div>
+                                                    <div class="col-12 col-md-9">
+                                                        <select class="vira-select2 form-select" name="driver"
+                                                            data-width="100%">
+                                                            @foreach (paymentDriverCode() as $key => $value)
+                                                                <option value="{{ $key }}"
+                                                                    @if (isset($editData)) {{ $editData->driver == $key ? 'selected' : '' }} @endif>
+                                                                    {{ $value }}</option>
+                                                            @endforeach
+                                                        </select>
                                                     </div>
                                                 </div>
                                             </div>
@@ -207,10 +228,21 @@
     </div>
 @endsection
 
+@section('css')
+    <link rel="stylesheet" href="{{ asset('panel/vendors/select2/select2.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('panel/vendors/dropify/dist/dropify.min.css') }}">
+@endsection
 @section('js')
+    <script src="{{ asset('panel/vendors/ckeditor/ckeditor.js') }}"></script>
+    <script src="{{ asset('panel/vendors/select2/select2.min.js') }}"></script>
+    <script src="{{ asset('panel/vendors/dropify/dist/dropify.min.js') }}"></script>
     <script>
         $(function() {
             'use strict';
+
+            if ($(".vira-select2").length) {
+                $(".vira-select2").select2();
+            }
 
             $(function() {
                 $('#dataTablePayment').DataTable({

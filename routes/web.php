@@ -14,3 +14,6 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', 'MainController@index')->name('home');
+Route::any('/show', 'MainController@show')->name('web.pay');
+Route::any('/pay', 'MainController@send')->name('web.pay.send');
+Route::any('/pay/verify', 'MainController@verify')->name('web.pay.verify');

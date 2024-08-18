@@ -227,7 +227,6 @@
 @endsection
 
 @section('js')
-    <script src="{{ asset('panel/vendors/tinymce-rtl/tinymce.min.js') }}"></script>
     <script>
         $(function() {
             'use strict';
@@ -256,34 +255,6 @@
                     length_sel.removeClass('form-control-sm');
                 });
             });
-
-
-            $('#offer').maxlength({
-                warningClass: "badge mt-1 bg-success",
-                limitReachedClass: "badge mt-1 bg-danger"
-            });
-
-            $('#quantity').maxlength({
-                warningClass: "badge mt-1 bg-success",
-                limitReachedClass: "badge mt-1 bg-danger"
-            });
-
-
-            //Tinymce editor
-            if ($("#contentEditor").length) {
-                tinymce.init({
-                    selector: '#contentEditor',
-                    min_height: 350,
-                    default_text_color: 'red',
-                    plugins: [
-                        'advlist', 'autoresize', 'autolink', 'lists', 'link',
-                        'searchreplace', 'wordcount'
-                    ],
-                    toolbar1: 'undo redo | insert | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image',
-                    toolbar2: 'print preview media | forecolor backcolor emoticons | codesample help',
-                    image_advtab: true,
-                });
-            }
         });
     </script>
 @endsection
