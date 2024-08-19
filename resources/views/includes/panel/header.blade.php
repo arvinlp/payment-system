@@ -7,7 +7,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <meta name="author" content="Arvin Loripour">
 
-    <title>@lang("Payment System") - {{ $store->name ?? '' }}@yield('page_title', '')</title>
+    <title>@lang("Payment System") - @yield('page_title', '')</title>
 
 
     <!-- core:css -->

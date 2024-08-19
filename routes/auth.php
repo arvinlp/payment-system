@@ -13,7 +13,6 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', 'LoginController@loginWithPassShow')->middleware('guest')->name('login');
 Route::get('/', 'LoginController@loginWithPassShow')->middleware('guest')->name('login.pass');
 Route::post('/', 'LoginController@loginWithPass')->middleware('guest')->name('login.pass.check');
 

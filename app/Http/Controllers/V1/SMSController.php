@@ -60,7 +60,7 @@ class SMSController{
         }
     }
 
-    public function sendPassword(float $recipient, $name = "کاربر", $code){
+    public function sendPassword(float $recipient, $name = "کاربر", $code = null){
         try{
             if($recipient == null) return false;
             if($code == null) return false;
@@ -83,7 +83,7 @@ class SMSController{
         }
     }
 
-    public function verifyCode(float $recipient, $name = "کاربر", $code){
+    public function verifyCode(float $recipient, $name = "کاربر", $code = null){
         try{
             if($recipient == null) return false;
             if($code == null) return false;
@@ -106,7 +106,7 @@ class SMSController{
         }
     }
 
-    public function expireSub(float $recipient, $name = "کاربر", $day){
+    public function expireSub(float $recipient, $name = "کاربر", $day = null){
         try{
             if($recipient == null) return false;
             if($day == null) return false;
@@ -129,7 +129,7 @@ class SMSController{
         }
     }
 
-    public function verifyCodeByAnother(float $recipient, $name = "کاربر", $number, $code){
+    public function verifyCodeByAnother(float $recipient, $name = "کاربر", $number = null, $code = null){
         try{
             if($recipient == null) return false;
             if($code == null) return false;
@@ -154,7 +154,7 @@ class SMSController{
         }
     }
 
-    public function wallet(float $recipient, $name = "کاربر", $amount){
+    public function wallet(float $recipient, $name = "کاربر", $amount = null){
         try{
             if($recipient == null) return false;
             if($amount == null) return false;

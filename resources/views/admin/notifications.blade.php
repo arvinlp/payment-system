@@ -235,7 +235,6 @@
                 });
             });
 
-
             $('#offer').maxlength({
                 warningClass: "badge mt-1 bg-success",
                 limitReachedClass: "badge mt-1 bg-danger"

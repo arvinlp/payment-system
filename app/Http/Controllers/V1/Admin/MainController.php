@@ -1,4 +1,12 @@
 <?php
+/*
+ * @Author: Arvin Loripour - ViraEcosystem 
+ * @Date: 2024-08-19 13:54:56 
+ * Copyright by Arvin Loripour 
+ * WebSite : http://www.arvinlp.ir 
+ * @Last Modified by:   Arvin.Loripour 
+ * @Last Modified time: 2024-08-19 13:54:56 
+ */
 
 namespace App\Http\Controllers\V1\Admin;
 
@@ -6,13 +14,8 @@ use App\Http\Controllers\V1\BaseController as Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Carbon\Carbon;
 use App\Models\User;
-use App\Models\UserCode;
-use App\Http\Controllers\V1\SMSController;
 use App\Models\Merchant;
-use App\Models\Notification;
-use App\Models\UserPayment;
 use Illuminate\Support\Facades\DB;
 
 class MainController extends Controller{

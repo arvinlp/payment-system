@@ -1,4 +1,12 @@
 <?php
+/*
+ * @Author: Arvin Loripour - ViraEcosystem 
+ * @Date: 2024-08-19 13:54:30 
+ * Copyright by Arvin Loripour 
+ * WebSite : http://www.arvinlp.ir 
+ * @Last Modified by:   Arvin.Loripour 
+ * @Last Modified time: 2024-08-19 13:54:30 
+ */
 
 namespace App\Http\Controllers\V1\Auth;
 
