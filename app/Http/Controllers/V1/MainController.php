@@ -13,6 +13,7 @@ use App\Http\Controllers\V1\BaseController;
 use App\Models\Currency;
 use App\Models\Gateway;
 use App\Models\Payment;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Shetabit\Multipay\Invoice;
@@ -30,7 +31,19 @@ class MainController extends BaseController{
     public function show(Request $request){
         if(($amount = $request->input('amount')) && ($gatewayID = $request->input('gatewaye'))){
             $name = $request->input('name') ?? null;
-            $mobile = $request->input('mobile') ?? null;
+
+            $mobile = (float) $request->input('mobile');
+            if(!self::checkMobile($mobile)){
+                return redirect()->route('home')->with('error' , __('شماره موبایل قابل قبول نمی‌باشد !'));
+            }
+            if(!self::checkamount($this->amount)){
+                return redirect()->route('home')->with('error' , __('مبلغ کمتر از ۱۰۰۰ مورد قبول نمی‌باشد !'));
+            }
+
+            $user = new User;
+            $user->mobile = $mobile;
+            $user->save();
+
             $gatewayID = $request->input('gatewaye') ?? 1;
             $currency = Currency::where('status',2)->first();
             $gateway = Gateway::where('status',1)->where('id', $gatewayID)->first();
@@ -50,12 +63,20 @@ class MainController extends BaseController{
     private $amount;
     private $gateway;
     public function send(Request $request){
-        if(($this->amount = $request->input('amount')) && ($gatewayID = $request->input('gateway'))){
+        if(($this->amount = (int)$request->input('amount')) && ($gatewayID = $request->input('gateway'))){
             if(!$this->merchant_id = $request->input('merchant_id')){
                 $this->merchant_id = 1;
             }
+
             $name = $request->input('name') ?? null;
-            $mobile = $request->input('mobile') ?? null;
+            $mobile = (float) $request->input('mobile');
+            if(!self::checkMobile($mobile)){
+                return redirect()->route('home')->with('error' , __('شماره موبایل قابل قبول نمی‌باشد !'));
+            }
+            if(!self::checkamount($this->amount)){
+                return redirect()->route('home')->with('error' , __('مبلغ کمتر از ۱۰۰۰ مورد قبول نمی‌باشد !'));
+            }
+
             $this->gateway = Gateway::where('status',1)->where('id', $gatewayID)->first();
 
             //
@@ -103,5 +124,21 @@ class MainController extends BaseController{
             dd('okay');
             echo $exception->getMessage();
         }
+    }
+
+
+    private function checkMobile($phoneNumber = null){
+        if(preg_match('/^(?:98|\+98|0098|0)?9[0-9]{9}$/', $phoneNumber)) {
+            return true;
+         }else{
+            return false;
+         }
+    }
+    private function checkamount($amount = null){
+        if($amount >= 1000) {
+            return true;
+         }else{
+            return false;
+         }
     }
 }
