@@ -69,7 +69,7 @@ class MainController extends BaseController{
                     'pin'=>$this->gateway->merchant_id ?? null,
                     'callbackUrl'=>route('web.pay.verify'),
                     'currency'=>'T',
-                    // 'mode' => 'sandbox'
+                    'mode' => env('APP_DEBUG',false) == true ? 'sandbox' : 'normal',
                 ])->purchase(
                 null, 
                 function($driver, $transactionId) {
