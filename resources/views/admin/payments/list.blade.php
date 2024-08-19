@@ -9,7 +9,7 @@
                 <div class="card">
                     <div class="card-body">
                         <div class="table-responsive">
-                            <table id="dataTablePayment" class="table">
+                            <table id="dataTablePayment" class="table table-bordered">
                                 <thead>
                                     <tr>
                                         <th scope="col" width="32px">#</th>
@@ -24,12 +24,12 @@
                                 </thead>
                                 <tbody>
                                     @foreach ($data as $item)
-                                        <tr>
+                                        <tr class="{{ $item->status != 1 ? 'table-'.paymentStatusColor($item->status) : '' }}">
                                             <td scope="row">{{ $item->id }}</td>
-                                            <td>{{ $item->user->nickname ?? $item->user_id }}</td>
+                                            <td>{{ $item->merchant->user->nickname ?? $item->merchant->user_id }}</td>
                                             <td class="text-center">{{ priceWithCurrency($item->amount) }}</td>
                                             <td class="text-center">{{ paymentDriver($item->driver) }}</td>
-                                            <td class="text-center">{{ $item->track_id }}</td>
+                                            <td class="text-center">{{ $item->transaction_id }}</td>
                                             <td class="text-center">{{ dateShow($item->updated_at, '%Y/%m/%d - H:m') }}</td>
                                             <td class="text-center">{{ paymentStatus($item->status) }}</td>
                                             <td class="text-center">

@@ -186,23 +186,49 @@ function alert($code)
 /**
  * 
  */
+function paymentStatusColorCode()
+{
+    return array(
+        1 => 'none',
+        2 => 'primary',
+        3 => 'secondary',
+        4 => 'success',
+        5 => 'warning',
+        6 => 'warning',
+        0 => 'info',
+        7 => 'light',
+        8 => 'dark',
+        9 => 'dark',
+        -1 => 'danger',
+        -2 => 'danger',
+        -3 => 'danger',
+    );
+}
+function paymentStatusColor($code)
+{
+    $args = paymentStatusColorCode();
+    return $args[$code];
+}
+
+/**
+ * 
+ */
 function paymentStatusCode()
 {
     return array(
-        1 => __('فعال'),
-        0 => __('غیرفعال'),
-        2 => __('پرداخت شده'),
-        3 => __('پیش فرض'),
-        4 => __('در انتظار تمدید'),
-        5 => __('در انتظار تمدید'),
-        6 => __('در انتظار تمدید'),
-        7 => __('پرداخت نشده + در انتظار تمدید مجدد'),
-        8 => __('پرداخت نشده + در انتظار تمدید مجدد'),
-        9 => __('پرداخت آنلاین'),
-        10 => __('پرداخت نقدی'),
-        -1 => __('نامشخص'),
-        -2 => __('نامشخص'),
-        -3 => __('نامشخص'),
+        1 => __('پرداخت شده'),
+        0 => __('نامشخص'),
+        2 => __('در انتظار پرداخت'),
+        3 => __('-'),
+        4 => __('-'),
+        5 => __('-'),
+        6 => __('-'),
+        7 => __('-'),
+        8 => __('-'),
+        9 => __('-'),
+        -1 => __('پرداخت نشده'),
+        -2 => __('لغو شده'),
+        -3 => __('-'),
     );
 }
 function paymentStatus($code)
@@ -252,6 +278,7 @@ function currencyStatus($code)
 function paymentDriverCode()
 {
     return array(
+        'local' => __('درگاه تست'),
         'zarinpal' => __('زرین پال'),
         'zibal' => __('زیبال'),
         'aqayepardakht' => __('آقای پرداخت'),

@@ -60,7 +60,7 @@ class MainController extends BaseController{
 
             //
             $paymentProcess = new PaymentProcess;
-            $paymentProcess::amount($this->amount)
+            return $paymentProcess::amount($this->amount)
                 ->via($this->gateway->driver)
                 ->config([
                     'username'=>$this->gateway->username ?? null,
@@ -69,6 +69,7 @@ class MainController extends BaseController{
                     'pin'=>$this->gateway->merchant_id ?? null,
                     'callbackUrl'=>route('web.pay.verify'),
                     'currency'=>'T',
+                    // 'mode' => 'sandbox'
                 ])->purchase(
                 null, 
                 function($driver, $transactionId) {
@@ -79,14 +80,13 @@ class MainController extends BaseController{
                 $payment->transaction_id = $transactionId;
                 $payment->transaction = uniqueRandomString('payments','transaction');
                 $payment->driver = $this->gateway->driver;
+                $payment->status = 2;
                 $payment->save();
                 
-            })->pay()
-            ->render();
-            // ->toJson();
+            })->pay()->render();// render() or toJson()
             
         }else{
-            // return redirect()->route('home');
+            return redirect()->route('home');
         }
     }
 
@@ -100,6 +100,7 @@ class MainController extends BaseController{
                 echo 'WTF';
             }
         } catch (InvalidPaymentException $exception) {
+            dd('okay');
             echo $exception->getMessage();
         }
     }

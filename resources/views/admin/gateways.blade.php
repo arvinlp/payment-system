@@ -56,10 +56,10 @@
                                             </div>
                                             <div class="col-12 col-md-6">
                                                 <div class="row align-items-center">
-                                                    <div class="col-12 col-md-3">
+                                                    <div class="col-12 col-md-2">
                                                         <label for="driver">@lang('درایور')</label>
                                                     </div>
-                                                    <div class="col-12 col-md-9">
+                                                    <div class="col-12 col-md">
                                                         <select class="vira-select2 form-select" name="driver"
                                                             data-width="100%">
                                                             @foreach (paymentDriverCode() as $key => $value)
