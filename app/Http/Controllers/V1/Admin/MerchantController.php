@@ -43,6 +43,7 @@ class MerchantController extends Controller{
             if($request->has('name'))$data->name = $request->input('name');
             if($request->has('url'))$data->url = $request->input('url');
             if($request->has('merchant'))$data->merchant = $request->input('merchant');
+            else $data->merchant = freeMerchant();
             if($request->has('user_id'))$data->user_id = $request->input('user_id');
             if($request->has('status'))$data->status = $request->input('status');
             
@@ -60,6 +61,7 @@ class MerchantController extends Controller{
             if($request->has('name'))$data->name = $request->input('name');
             if($request->has('url'))$data->url = $request->input('url');
             if($request->has('merchant'))$data->merchant = $request->input('merchant');
+            else if($data->merchant == null){$data->merchant = freeMerchant();}
             if($request->has('user_id'))$data->user_id = $request->input('user_id');
             if($request->has('status'))$data->status = $request->input('status');
             $data->save();

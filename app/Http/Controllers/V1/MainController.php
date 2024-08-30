@@ -12,6 +12,7 @@ namespace App\Http\Controllers\V1;
 use App\Http\Controllers\V1\BaseController;
 use App\Models\Currency;
 use App\Models\Gateway;
+use App\Models\Merchant;
 use App\Models\Payment;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -28,8 +29,7 @@ class MainController extends BaseController{
     }
 
     public function show(Request $request){
-        if(($this->amount = (int)$request->input('amount')) && ($gatewayID = $request->input('gatewaye'))){
-            $name = $request->input('name') ?? null;
+        if(($this->amount = (int)$request->input('amount')) && ($gatewayID = $request->input('gateway'))){
 
             $mobile = (float) $request->input('mobile');
             if(!self::checkMobile($mobile)){
@@ -45,13 +45,18 @@ class MainController extends BaseController{
                 $userInfo->save();
             }
 
+            $name = $request->input('name') ?? $userInfo->nickname;
+
             $currency = Currency::where('status',2)->first();
 
             if(!$gateway = Gateway::where('status',1)->where('id', $gatewayID)->first()){
-                return redirect()->route('home')->with('error' , __('درگاه پرداخت درخواستی غیرفعال می‌باشد !'));
+                if(!$gateway = Gateway::where('status',1)->where('driver', $gatewayID)->first()){
+                    return redirect()->route('home')->with('error' , __('درگاه پرداخت درخواستی غیرفعال می‌باشد !'));
+                }
             }
 
             $backurl = $request->input('callback_url') ?? null;
+            $merchant = $request->input('merchant') ?? null;
             $json = $request->input('json') ?? null;
 
             return self::getWebView('pay',[
@@ -61,6 +66,7 @@ class MainController extends BaseController{
                 'mobile'=>$mobile,
                 'name'=>$name,
                 'backurl'=>$backurl,
+                'merchant'=>$merchant,
                 'json'=>$json
             ]);
         }else{
@@ -68,6 +74,7 @@ class MainController extends BaseController{
         }
     }
 
+    private $merchant;
     private $merchant_id;
     private $amount;
     private $gateway;
@@ -77,7 +84,11 @@ class MainController extends BaseController{
     public function send(Request $request){
         if(($this->amount = (int)$request->input('amount')) && ($this->gatewayID = $request->input('gateway'))){
             if(!$this->merchant_id = $request->input('merchant_id')){
-                $this->merchant_id = 1;
+                if($this->merchant = Merchant::where('merchant', $request->input('merchant'))->where('status', 1)->first()){
+                    $this->merchant_id = $this->merchant->id;
+                }else{
+                    $this->merchant_id = 1;
+                }
             }
 
             $name = $request->input('name') ?? null;
@@ -93,7 +104,7 @@ class MainController extends BaseController{
                 return redirect()->route('home')->with('error' , __('درگاه پرداخت درخواستی غیرفعال می‌باشد !'));
             }
 
-            $this->backurl = $request->input('callback_url') ?? null;
+            $this->backurl = $request->input('backurl');
             $json = $request->input('json') ?? null;
 
             //
@@ -149,17 +160,23 @@ class MainController extends BaseController{
     }
 
     public function verify(Request $request){
+        
         if(!$payInfo = Payment::where('transaction',$request->input('trans_id'))->where('amount',$request->input('price'))->first()){
             return self::getWebView('cancel',['code'=>null, 'message'=>'خطا در بازگشت از درگاه پرداخت !']);
         }
-        
+
         try {
             $this->gateway = Gateway::where('status',1)->where('id', $request->input('ipgw'))->first();
-            $receipt = PaymentProcess::amount($request->input('price'))
+            
+            $trans_id = (string)$payInfo->transaction_id;
+            
+            $receipt = PaymentProcess::amount($payInfo->amount)
                 ->via($this->gateway->driver)
                 ->config(self::createConfig())
-                ->transactionId($payInfo->transaction_id)->verify();
-        
+                ->transactionId($request->input('trackId'))
+                ->verify();
+                
+            $payInfo->transaction_id = $trans_id;
             $payInfo->refid = $receipt->getReferenceId();
             $payInfo->status = 1;
             $payInfo->status_gateway = $request->input('status') ?? 1;
@@ -167,7 +184,7 @@ class MainController extends BaseController{
             if($payInfo->callback_url == null){
                 return self::getWebView('verify',['refid' => $receipt->getReferenceId()]);
             }else{
-                return redirect()->to($payInfo->callback_url);
+                return redirect()->to($payInfo->callback_url."&status={$payInfo->status}&refid={$receipt->getReferenceId()}");
             }
             
         } catch (InvalidPaymentException $exception) {
@@ -175,7 +192,11 @@ class MainController extends BaseController{
             $payInfo->status_gateway = $exception->getCode();
             $payInfo->response_bk = $exception->getMessage();
             $payInfo->save();
-            return self::getWebView('cancel',['code'=>$exception->getCode(), 'message'=>$exception->getMessage()]);
+            if($payInfo->callback_url == null){
+                return self::getWebView('cancel',['code'=>$exception->getCode(), 'message'=>$exception->getMessage()]);
+            }else{
+                return redirect()->to($payInfo->callback_url."&status={$payInfo->status}");
+            }
         }
     }
 
@@ -192,7 +213,7 @@ class MainController extends BaseController{
     }
     
     private function checkMobile($phoneNumber = null){
-        if(preg_match('/^(?:98|\+98|0098|0)?9[0-9]{9}$/', $phoneNumber)) {
+        if(preg_match('/^(?:98|\+98|0098|09|9)?[0-9]{9}$/', $phoneNumber)) {
             return true;
          }else{
             return false;

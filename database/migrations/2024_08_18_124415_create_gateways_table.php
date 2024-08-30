@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::dropIfExists('gatewayes');
+        Schema::dropIfExists('gateways');
         Schema::create('gateways', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('name')->nullable();

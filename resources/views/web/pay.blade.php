@@ -19,6 +19,9 @@
             @if (isset($backurl))
                 <input type="hidden" name="backurl" value="{{ $backurl }}">
             @endif
+            @if (isset($merchant))
+                <input type="hidden" name="merchant" value="{{ $merchant }}">
+            @endif
             @if (isset($json))
                 <input type="hidden" name="json" value="{{ $json }}">
             @endif

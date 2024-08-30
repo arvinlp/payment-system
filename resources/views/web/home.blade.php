@@ -27,8 +27,8 @@
                         placeholder="مبلغ را به {{ $currency ?? 'IRT' }} وارد نمایید." required>
                 </div>
                 <div class="mb-3">
-                    <label for="gatewaye" class="form-label">@lang('درگاه پرداخت')</label>
-                    <select class="form-select" name="gatewaye">
+                    <label for="gateway" class="form-label">@lang('درگاه پرداخت')</label>
+                    <select class="form-select" name="gateway">
                         @php $i = 0; @endphp
                         @foreach ($gateways as $item)
                             <option @if ($i == 0) selected @endif value="{{ $item->id }}">
