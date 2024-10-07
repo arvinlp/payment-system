@@ -5,15 +5,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@lang('Payment System') - @yield('page_title', '')</title>
-    <link rel="stylesheet" type="text/css" href="{{ asset('auth/css/bootstrap.min.css') }}">
-    <link rel="stylesheet" type="text/css" href="{{ asset('auth/css/fontawesome-all.min.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ asset('login/css/bootstrap.min.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ asset('login/css/fontawesome-all.min.css') }}">
 
     @if (Config::get('app.locale_direction') == 'rtl')
-        <link rel="stylesheet" type="text/css" href="{{ asset('auth/css/iofrm-style-rtl.css') }}">
-        <link rel="stylesheet" href="{{ asset('auth/css/iofrm-theme4-rtl.css') }}">
+        <link rel="stylesheet" type="text/css" href="{{ asset('login/css/iofrm-style-rtl.css') }}">
+        <link rel="stylesheet" href="{{ asset('login/css/iofrm-theme4-rtl.css') }}">
     @else
-        <link rel="stylesheet" type="text/css" href="{{ asset('auth/css/iofrm-style.css') }}">
-        <link rel="stylesheet" href="{{ asset('auth/css/iofrm-theme4.css') }}">
+        <link rel="stylesheet" type="text/css" href="{{ asset('login/css/iofrm-style.css') }}">
+        <link rel="stylesheet" href="{{ asset('login/css/iofrm-theme4.css') }}">
     @endif
 
 </head>
@@ -24,7 +24,7 @@
             <div class="img-holder">
                 <div class="bg"></div>
                 <div class="info-holder">
-                    <img src="{{ asset('auth/images/graphic1.svg') }}" alt="Payment System - Panel">
+                    <img src="{{ asset('login/images/graphic1.svg') }}" alt="Payment System - Panel">
                 </div>
             </div>
             <div class="form-holder">
@@ -54,10 +54,10 @@
             </div>
         </div>
     </div>
-    <script type="text/javascript" src="{{ asset('auth/js/jquery.min.js') }}"></script>
-    <script type="text/javascript" src="{{ asset('auth/js/popper.min.js') }}"></script>
-    <script type="text/javascript" src="{{ asset('auth/js/bootstrap.min.js') }}"></script>
-    <script type="text/javascript" src="{{ asset('auth/js/main.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('login/js/jquery.min.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('login/js/popper.min.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('login/js/bootstrap.min.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('login/js/main.js') }}"></script>
     @yield('js')
 </body>
 

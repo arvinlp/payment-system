@@ -6,13 +6,13 @@
     "license": "MIT",
     "require": {
         "php": "^8.1",
+        "aqayepardakht/php-sdk": "^1.3",
         "guzzlehttp/guzzle": "^7.2",
         "ippanel/php-rest-sdk": "^2.0",
         "laravel/framework": "^10.10",
         "laravel/sanctum": "^3.3",
         "laravel/tinker": "^2.8",
         "morilog/jalali": "^3.4",
-        "shetabit/payment": "^5.8",
         "simplesoftwareio/simple-qrcode": "^4.2"
     },
     "require-dev": {
