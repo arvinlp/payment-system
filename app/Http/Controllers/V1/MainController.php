@@ -5,13 +5,13 @@
  * Copyright by Arvin Loripour 
  * WebSite : http://www.arvinlp.ir 
  * @Last Modified by: Arvin.Loripour
- * @Last Modified time: 2024-10-07 16:48:40
+ * @Last Modified time: 2024-10-07 17:47:55
  */
 
 namespace App\Http\Controllers\V1;
 
 use App\Http\Controllers\V1\BaseController;
-use App\Http\Controllers\V1\Gatewaye\Aqayepardakht;
+use App\Http\Controllers\V1\Gateway\Aqayepardakht;
 use App\Models\Currency;
 use App\Models\Gateway;
 use App\Models\Merchant;
@@ -123,11 +123,19 @@ class MainController extends BaseController
 
         if (!$payInfo = Payment::where('transaction', $request->input('sti'))->where('amount', $request->input('price'))->first()) {
             return self::getWebView('cancel', ['code' => null, 'message' => 'خطا در بازگشت از درگاه پرداخت !']);
-        }
-
-        $gateway = Gateway::where('status', 1)->where('id', $request->input('ipgw'))->first();
-        
+        }        
         try {
+            if($payInfo->status == 1){
+                if (str_contains($payInfo->callback_url,env('APP_URL'))) {
+                    return self::getWebView('verify', ['refid' => $payInfo->transaction_id]);
+                }
+                if (!filter_var($payInfo->callback_url, FILTER_VALIDATE_URL)) {
+                    return self::getWebView('verify', ['refid' => $payInfo->transaction_id]);
+                } else {
+                    return redirect()->to($payInfo->callback_url . "&status={$payInfo->status}&refid={$payInfo->transaction_id}");
+                }
+            }
+
             $aqa = new Aqayepardakht;
             if ($data = $aqa->verify($request, $payInfo->amount, $payInfo->system_trans_id)) {
                 
@@ -136,7 +144,10 @@ class MainController extends BaseController
                 $payInfo->status_gateway = $request->input('status') ?? 1;
                 $payInfo->save();
 
-                if ($payInfo->callback_url == null) {
+                if (str_contains($payInfo->callback_url, env('APP_URL'))) {
+                    return self::getWebView('verify', ['refid' => $data]);
+                }
+                if (!filter_var($payInfo->callback_url, FILTER_VALIDATE_URL)) {
                     return self::getWebView('verify', ['refid' => $data]);
                 } else {
                     return redirect()->to($payInfo->callback_url . "&status={$payInfo->status}&refid={$data}");
@@ -146,7 +157,10 @@ class MainController extends BaseController
             }
 
         } catch (\Exception $exception) {
-            if ($payInfo->callback_url == null) {
+            if (str_contains($payInfo->callback_url,env('APP_URL'))) {
+                return self::getWebView('cancel', ['code' => $exception->getCode(), 'message' => $exception->getMessage()]);
+            }
+            if (!filter_var($payInfo->callback_url, FILTER_VALIDATE_URL)) {
                 return self::getWebView('cancel', ['code' => $exception->getCode(), 'message' => $exception->getMessage()]);
             } else {
                 return redirect()->to($payInfo->callback_url . "&status={$payInfo->status}");

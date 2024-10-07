@@ -8,7 +8,7 @@
  * @Last Modified time: 2024-10-07 16:48:04
  */
 
-namespace App\Http\Controllers\V1\Gatewaye;
+namespace App\Http\Controllers\V1\Gateway;
 
 use App\Models\Gateway;
 use App\Models\Payment;

@@ -5,7 +5,7 @@
  * Copyright by Arvin Loripour 
  * WebSite : http://www.arvinlp.ir 
  * @Last Modified by: Arvin.Loripour
- * @Last Modified time: 2024-08-18 20:46:13
+ * @Last Modified time: 2024-10-07 17:25:04
  */
 
 use App\Models\Merchant;
@@ -207,7 +207,7 @@ function paymentStatusColorCode()
 function paymentStatusColor($code)
 {
     $args = paymentStatusColorCode();
-    return $args[$code];
+    return $args[$code] ?? 'none';
 }
 
 /**
@@ -234,7 +234,7 @@ function paymentStatusCode()
 function paymentStatus($code)
 {
     $args = paymentStatusCode();
-    return $args[$code];
+    return $args[$code] ?? 'نامشخص';
 }
 
 /**

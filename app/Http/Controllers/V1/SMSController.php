@@ -5,7 +5,7 @@
  * Copyright by Arvin Loripour 
  * WebSite : http://www.arvinlp.ir 
  * @Last Modified by: Arvin.Loripour
- * @Last Modified time: 2023-03-21 15:06:16
+ * @Last Modified time: 2024-10-07 17:03:50
  */
 namespace App\Http\Controllers\V1;
 
@@ -46,17 +46,6 @@ class SMSController{
             return $bulkID;
         } catch (Error $e) {
             return $e;
-        }
-    }
-
-    public function getSendInfo($bulkID = null){
-        try{
-            if($bulkID == null) return false;
-            $client = new Client($this->apiKey);
-            $message = $client->get_message($bulkID);
-            return $message;
-        }catch (Error $e) {
-            return false;
         }
     }
 
