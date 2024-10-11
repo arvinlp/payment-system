@@ -101,7 +101,7 @@ class MainController extends BaseController
             }
 
             $system_trans_id = uniqueRandomString('payments', 'transaction');
-            $backurl = $request->input('callback_url') ?? route('web.pay.verify', ['sti' => $system_trans_id, 'price' => $amount, 'ipgw' => $gatewayID]);
+            $backurl = $request->input('backurl') ?? null;
 
             try {
                 $aqa = new Aqayepardakht;

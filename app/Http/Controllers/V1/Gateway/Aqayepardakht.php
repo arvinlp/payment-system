@@ -30,7 +30,7 @@ class Aqayepardakht
 
         $parameters['pin'] = $this->aqa->merchant_id;
         $parameters['amount'] = $amount;
-        $parameters['callback'] = $callback;
+        $parameters['callback'] = route('web.pay.verify', ['sti' => $system_trans_id, 'price' => $amount, 'ipgw' => $this->aqa->id]);
         $parameters['invoice_id'] = $invoice_id ?? $system_trans_id;
         if (isset($mobile)) $parameters['mobile'] = $mobile;
 

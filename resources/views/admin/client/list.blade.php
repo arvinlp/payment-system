@@ -36,16 +36,6 @@
                                             </td>
                                             <td>
                                                 <div class="btn-group" role="group" aria-label="action">
-                                                    <a href="{{ route('admin.clients.show', ['id' => $item->id]) }}"
-                                                        name="@lang('مشاهده')"
-                                                        class="btn btn-primary btn-sm">
-                                                        <i class="fa-solid fa-eye"></i>
-                                                    </a>
-                                                    <a href="{{ route('admin.user.change', ['id' => $item->id]) }}"
-                                                        name="@lang('تغییر کاربری')"
-                                                        class="btn btn-primary btn-sm">
-                                                        <i class="fa-solid fa-refresh"></i>
-                                                    </a>
                                                     <a href="{{ route('admin.clients.edit', ['id' => $item->id]) }}"
                                                         name="@lang('ویرایش')"
                                                         class="btn btn-primary btn-sm">
